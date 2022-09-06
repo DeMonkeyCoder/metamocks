@@ -2,9 +2,9 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.formatChainId = exports.decodeEthCall = exports.encodeEthResult = exports.keccak256 = void 0;
 const ethers_1 = require("ethers");
-const lib_esm_1 = require("@ethersproject/bignumber/lib.esm");
+const bignumber_1 = require("@ethersproject/bignumber");
 const bytes_1 = require("@ethersproject/bytes");
-const InputDataDecoder = require('ethereum-input-data-decoder');
+const InputDataDecoder = require("ethereum-input-data-decoder");
 function keccak256(data) {
     return ethers_1.ethers.utils.keccak256(data);
 }
@@ -20,6 +20,6 @@ function decodeEthCall(abi, input) {
 }
 exports.decodeEthCall = decodeEthCall;
 function formatChainId(chainId) {
-    return (0, bytes_1.hexStripZeros)(lib_esm_1.BigNumber.from(chainId).toHexString());
+    return (0, bytes_1.hexStripZeros)(bignumber_1.BigNumber.from(chainId).toHexString());
 }
 exports.formatChainId = formatChainId;

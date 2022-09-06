@@ -1,5 +1,5 @@
-import { BigNumber } from '@ethersproject/bignumber/lib.esm';
-import { BytesLike } from '@ethersproject/bytes';
+import { BigNumber } from "@ethersproject/bignumber";
+import { BytesLike } from "@ethersproject/bytes";
 export declare function keccak256(data: BytesLike): string;
 export declare function encodeEthResult(abi: any, funcName: string, result: (BigNumber | string | number)[]): string;
 export declare type DecodedCall = {
