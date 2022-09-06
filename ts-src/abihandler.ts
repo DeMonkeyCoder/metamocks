@@ -6,7 +6,7 @@ export default class AbiHandler {
 
   methods: { [name: string]: (...args: any[]) => any } = {};
 
-  constructor(abi: any) {
+  constructor(abi?: any) {
     if (abi) {
       this.abi = abi;
     }
