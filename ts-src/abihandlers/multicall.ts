@@ -1,12 +1,9 @@
 import { FAKE_BLOCK_HASH } from "../fake-tx-data";
 import AbiHandler from "../abihandler";
 import MetamocksContext from "../context";
+import { isTheSameAddress } from "../utils";
 
-function isTheSameAddress(address1: string, address2: string) {
-  return address1.toLowerCase() === address2.toLowerCase();
-}
-
-export class BaseMulticallHandler extends AbiHandler {
+export default class MulticallAbiHandler extends AbiHandler {
   methods = {
     async tryBlockAndAggregate(context: MetamocksContext, decodedInput: any[]) {
       const [_requireSuccess, calls] = decodedInput;

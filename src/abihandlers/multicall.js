@@ -54,15 +54,12 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.BaseMulticallHandler = void 0;
 var fake_tx_data_1 = require("../fake-tx-data");
 var abihandler_1 = __importDefault(require("../abihandler"));
-function isTheSameAddress(address1, address2) {
-    return address1.toLowerCase() === address2.toLowerCase();
-}
-var BaseMulticallHandler = /** @class */ (function (_super) {
-    __extends(BaseMulticallHandler, _super);
-    function BaseMulticallHandler() {
+var utils_1 = require("../utils");
+var MulticallAbiHandler = /** @class */ (function (_super) {
+    __extends(MulticallAbiHandler, _super);
+    function MulticallAbiHandler() {
         var _this = _super !== null && _super.apply(this, arguments) || this;
         _this.methods = {
             tryBlockAndAggregate: function (context, decodedInput) {
@@ -87,7 +84,7 @@ var BaseMulticallHandler = /** @class */ (function (_super) {
                             case 2:
                                 if (!(_c < _a.length)) return [3 /*break*/, 5];
                                 contractAddress = _a[_c];
-                                if (!isTheSameAddress(contractAddress, callAddress)) return [3 /*break*/, 4];
+                                if (!(0, utils_1.isTheSameAddress)(contractAddress, callAddress)) return [3 /*break*/, 4];
                                 return [4 /*yield*/, context.handlers[contractAddress].handleCall(context, callInput, function (r) { return results.push([true, r]); })];
                             case 3:
                                 _d.sent();
@@ -106,6 +103,6 @@ var BaseMulticallHandler = /** @class */ (function (_super) {
         };
         return _this;
     }
-    return BaseMulticallHandler;
+    return MulticallAbiHandler;
 }(abihandler_1.default));
-exports.BaseMulticallHandler = BaseMulticallHandler;
+exports.default = MulticallAbiHandler;
