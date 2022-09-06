@@ -1,6 +1,6 @@
-import { FAKE_BLOCK_HASH } from '../fakeTxData';
-import { MetamocksContext } from '..';
-import { AbiHandler } from '../abiHandler';
+import {FAKE_BLOCK_HASH} from '../fake-tx-data';
+import AbiHandler from '../abihandler';
+import MetamocksContext from "../context";
 
 function isTheSameAddress(address1: string, address2: string) {
   return address1.toLowerCase() === address2.toLowerCase();

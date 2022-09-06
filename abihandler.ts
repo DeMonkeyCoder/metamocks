@@ -1,7 +1,7 @@
-import { decodeEthCall, encodeEthResult } from './abiUtils';
-import { MetamocksContext } from '.';
+import {decodeEthCall, encodeEthResult} from './utils/abi';
+import MetamocksContext from "./context";
 
-export class AbiHandler {
+export default class AbiHandler {
   abi: any[] = [];
 
   methods: { [name: string]: (...args: any[]) => any } = {};
