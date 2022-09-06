@@ -2,14 +2,12 @@ import { decodeEthCall, encodeEthResult } from "./utils/abi";
 import MetamocksContext from "./context";
 
 export default class AbiHandler {
-  abi: any[] = [];
+  abi: any[];
 
   methods: { [name: string]: (...args: any[]) => any } = {};
 
-  constructor(abi?: any) {
-    if (abi) {
-      this.abi = abi;
-    }
+  constructor(abi: any[]) {
+    this.abi = abi;
   }
 
   async handleCall(

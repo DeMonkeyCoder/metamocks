@@ -39,11 +39,8 @@ Object.defineProperty(exports, "__esModule", { value: true });
 var abi_1 = require("./utils/abi");
 var AbiHandler = /** @class */ (function () {
     function AbiHandler(abi) {
-        this.abi = [];
         this.methods = {};
-        if (abi) {
-            this.abi = abi;
-        }
+        this.abi = abi;
     }
     AbiHandler.prototype.handleCall = function (context, data, setResult) {
         return __awaiter(this, void 0, void 0, function () {
