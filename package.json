@@ -1,0 +1,33 @@
+{
+  "name": "metamocks",
+  "version": "0.1.0",
+  "description": "a utility to mock metamask mainly for e2e testing",
+  "main": "index.ts",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/alimahdiyar/metamocks.git"
+  },
+  "publishConfig": {
+    "access": "public"
+  },
+  "keywords": [
+    "e2e",
+    "test",
+    "cypress",
+    "metamask",
+    "mock"
+  ],
+  "author": "Ali Mahdiyar",
+  "license": "GPL-3.0-or-later",
+  "bugs": {
+    "url": "https://github.com/alimahdiyar/metamocks/issues"
+  },
+  "homepage": "https://github.com/alimahdiyar/metamocks#readme",
+  "dependencies": {
+    "@ethersproject/bignumber": "^5.7.0",
+    "@ethersproject/bytes": "^5.7.0",
+    "@ethersproject/experimental": "^5.7.0",
+    "ethereum-input-data-decoder": "^0.4.2",
+    "ethers": "^5.7.0"
+  }
+}
