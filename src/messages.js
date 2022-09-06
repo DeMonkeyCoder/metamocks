@@ -6,19 +6,19 @@ exports.USER_DENIED_REQUEST_ERROR_CODE = 4001;
 // This might happen in different situations
 exports.GENERIC_ERROR_CODE = -32603;
 exports.GENERIC_ERROR_CODE_2 = -320000;
-const getInsufficientFundTransactionError = (address) => ({
+var getInsufficientFundTransactionError = function (address) { return ({
     code: exports.GENERIC_ERROR_CODE_2,
-    message: `err: insufficient funds for gas * price + value: address ${address} have 2000 want 10000000000000000000000000 (supplied gas 14995852)`,
-});
+    message: "err: insufficient funds for gas * price + value: address ".concat(address, " have 2000 want 10000000000000000000000000 (supplied gas 14995852)"),
+}); };
 exports.getInsufficientFundTransactionError = getInsufficientFundTransactionError;
-const getInsufficientFundGasEstimateError = (address) => ({
+var getInsufficientFundGasEstimateError = function (address) { return ({
     code: exports.GENERIC_ERROR_CODE,
     message: 'Internal JSON-RPC error.',
     data: {
         code: exports.GENERIC_ERROR_CODE_2,
-        message: `insufficient funds for transfer: address ${address}`,
+        message: "insufficient funds for transfer: address ".concat(address),
     },
-});
+}); };
 exports.getInsufficientFundGasEstimateError = getInsufficientFundGasEstimateError;
 exports.userDeniedTransactionError = {
     code: exports.USER_DENIED_REQUEST_ERROR_CODE,

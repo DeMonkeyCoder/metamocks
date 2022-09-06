@@ -2,7 +2,7 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.sleep = exports.isTheSameAddress = exports.enumKeys = void 0;
 function enumKeys(obj) {
-    return Object.keys(obj).filter((k) => Number.isNaN(+k));
+    return Object.keys(obj).filter(function (k) { return Number.isNaN(+k); });
 }
 exports.enumKeys = enumKeys;
 function isTheSameAddress(address1, address2) {
@@ -10,6 +10,6 @@ function isTheSameAddress(address1, address2) {
 }
 exports.isTheSameAddress = isTheSameAddress;
 function sleep(ms) {
-    return new Promise((resolve) => setTimeout(resolve, ms));
+    return new Promise(function (resolve) { return setTimeout(resolve, ms); });
 }
 exports.sleep = sleep;
