@@ -1,4 +1,4 @@
-import {decodeEthCall, encodeEthResult} from './utils/abi';
+import { decodeEthCall, encodeEthResult } from "./utils/abi";
 import MetamocksContext from "./context";
 
 export default class AbiHandler {
@@ -12,11 +12,15 @@ export default class AbiHandler {
     }
   }
 
-  async handleCall(context: MetamocksContext, data: string, setResult?: (arg0: string) => void) {
+  async handleCall(
+    context: MetamocksContext,
+    data: string,
+    setResult?: (arg0: string) => void
+  ) {
     const decoded = decodeEthCall(this.abi, data);
-    if (decoded.method === 'multicall') {
-      const [deadline, [data]] = decoded.inputs;
-      await this.handleCall(context, data, setResult);
+    if (decoded.method === "multicall") {
+      const [deadline, [methodData]] = decoded.inputs;
+      await this.handleCall(context, methodData, setResult);
       return;
     }
     const method = this.methods[decoded.method];
@@ -26,7 +30,11 @@ export default class AbiHandler {
     }
   }
 
-  async handleTransaction(context: MetamocksContext, data: string, setResult: (arg0: string) => void) {
+  async handleTransaction(
+    context: MetamocksContext,
+    data: string,
+    setResult: (arg0: string) => void
+  ) {
     await this.handleCall(context, data);
     setResult(context.getFakeTransactionHash());
   }

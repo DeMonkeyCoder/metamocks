@@ -11,7 +11,3 @@ export enum TransactionStatus {
   USER_DENIED = 'rejected',
   FAILED = 'failed',
 }
-
-export {default as AbiHandler} from './abihandler';
-export {default as MetaMocks} from './metamocks';
-export {default as MetamocksContext} from './context';

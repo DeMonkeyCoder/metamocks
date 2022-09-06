@@ -1,5 +1,5 @@
-import {FAKE_BLOCK_HASH} from '../fake-tx-data';
-import AbiHandler from '../abihandler';
+import { FAKE_BLOCK_HASH } from "../fake-tx-data";
+import AbiHandler from "../abihandler";
 import MetamocksContext from "../context";
 
 function isTheSameAddress(address1: string, address2: string) {
@@ -15,8 +15,10 @@ export class BaseMulticallHandler extends AbiHandler {
         const [callAddress, callInput] = call;
         for (const contractAddress in context.handlers) {
           if (isTheSameAddress(contractAddress, callAddress)) {
-            await context.handlers[contractAddress].handleCall(context, callInput, (r: string) =>
-              results.push([true, r]),
+            await context.handlers[contractAddress].handleCall(
+              context,
+              callInput,
+              (r: string) => results.push([true, r])
             );
           }
         }

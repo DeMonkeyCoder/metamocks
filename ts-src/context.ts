@@ -1,6 +1,6 @@
 import AbiHandler from "./abihandler";
-import {formatChainId, keccak256} from "./utils/abi";
-import {latestBlock} from "./fake-tx-data";
+import { formatChainId, keccak256 } from "./utils/abi";
+import { latestBlock } from "./fake-tx-data";
 
 export default class MetamocksContext {
   chainId: string;
@@ -11,7 +11,9 @@ export default class MetamocksContext {
 
   constructor(chainId: number, supportedChainIds?: number[]) {
     this.chainId = formatChainId(String(chainId));
-    this.supportedChainIds = supportedChainIds?.map((cid) => formatChainId(String(cid))) || [this.chainId];
+    this.supportedChainIds = supportedChainIds?.map((cid) =>
+      formatChainId(String(cid))
+    ) || [this.chainId];
   }
 
   getLatestBlock() {
