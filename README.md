@@ -48,8 +48,8 @@ Cypress.Commands.add('setAbiHandler', (address, abiHandler) => {
 
 if you are using typescript, create a metamocks.d.ts file in the cypress folder with the following content:
 
-```ts!
-import { AbiHandler } from 'metamocks';
+```ts
+import {AbiHandler} from 'metamocks';
 
 interface EthereumProvider {
   on?: (...args: any[]) => void
@@ -61,8 +61,10 @@ declare global {
   namespace Cypress {
     interface Chainable {
       setupMetamocks(): void;
+
       setAbiHandler(address: string, handler: AbiHandler): void;
     }
+
     interface Window {
       ethereum?: EthereumProvider
     }
