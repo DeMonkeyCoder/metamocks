@@ -44,26 +44,19 @@ var AbiHandler = /** @class */ (function () {
     }
     AbiHandler.prototype.handleCall = function (context, data, setResult) {
         return __awaiter(this, void 0, void 0, function () {
-            var decoded, _a, deadline, methodData, method, res;
-            return __generator(this, function (_b) {
-                switch (_b.label) {
+            var decoded, method, res;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
                     case 0:
                         decoded = (0, abi_1.decodeEthCall)(this.abi, data);
-                        if (!(decoded.method === "multicall")) return [3 /*break*/, 2];
-                        _a = decoded.inputs, deadline = _a[0], methodData = _a[1][0];
-                        return [4 /*yield*/, this.handleCall(context, methodData, setResult)];
-                    case 1:
-                        _b.sent();
-                        return [2 /*return*/];
-                    case 2:
                         method = this.methods[decoded.method];
-                        if (!method) return [3 /*break*/, 4];
+                        if (!method) return [3 /*break*/, 2];
                         return [4 /*yield*/, method(context, decoded.inputs)];
-                    case 3:
-                        res = _b.sent();
+                    case 1:
+                        res = _a.sent();
                         setResult === null || setResult === void 0 ? void 0 : setResult((0, abi_1.encodeEthResult)(this.abi, decoded.method, res));
-                        _b.label = 4;
-                    case 4: return [2 /*return*/];
+                        _a.label = 2;
+                    case 2: return [2 /*return*/];
                 }
             });
         });

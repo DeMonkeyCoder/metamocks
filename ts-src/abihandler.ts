@@ -16,11 +16,6 @@ export default class AbiHandler {
     setResult?: (arg0: string) => void
   ) {
     const decoded = decodeEthCall(this.abi, data);
-    if (decoded.method === "multicall") {
-      const [deadline, [methodData]] = decoded.inputs;
-      await this.handleCall(context, methodData, setResult);
-      return;
-    }
     const method = this.methods[decoded.method];
     if (method) {
       const res = await method(context, decoded.inputs);
