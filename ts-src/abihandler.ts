@@ -4,6 +4,7 @@ import MetamocksContext from "./context";
 export default class AbiHandler {
   abi: any[];
 
+  // TODO: methods should have a more specific argument type
   methods: { [name: string]: (...args: any[]) => any } = {};
 
   constructor(abi: any[]) {
