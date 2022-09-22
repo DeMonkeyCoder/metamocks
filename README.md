@@ -39,32 +39,31 @@ Cypress.Commands.add('setupMetamocks', () => {
   })
 })
 
-Cypress.Commands.add('setAbiHandler', (address, abiHandler) => {
-  cy.get('@metamocks').then((metamocks) => {
-    metamocks.setHandler(address, abiHandler)
-  })
+Cypress.Commands.add('registerHandler', (...args) => {
+    cy.get('@metamocks').then((val: any) => {
+        const metamocks = val as MetaMocks
+        metamocks.registerHandler(...args)
+    })
 })
 ```
 
 if you are using typescript, create a metamocks.d.ts file in the cypress folder with the following content:
 
 ```ts
-import {AbiHandler} from 'metamocks';
+import MetaMocks from 'metamocks';
 
-interface EthereumProvider {
-  on?: (...args: any[]) => void
-  removeListener?: (...args: any[]) => void
-  autoRefreshOnNetworkChange?: boolean
+export interface EthereumProvider {
+  on?: (...args: any[]) => void;
+  removeListener?: (...args: any[]) => void;
+  autoRefreshOnNetworkChange?: boolean;
 }
 
 declare global {
   namespace Cypress {
     interface Chainable {
+      registerHandler: MetaMocks['registerHandler'];
       setupMetamocks(): void;
-
-      setAbiHandler(address: string, handler: AbiHandler): void;
     }
-
     interface Window {
       ethereum?: EthereumProvider
     }
@@ -77,12 +76,12 @@ now you can setup metamocks in your tests using `cy.setupMetamocks()` before vis
 ## mocking abis
 
 To mock an abi, you should create an `AbiHanlder` class for it, and implement the mock contract methods there. An
-example AbiHanlder can be
-found [here](https://github.com/Song-Dust/interface/blob/master/cypress/utils/abihandlers/Arena.ts). then register that
+example AbiHanlders can be
+found [here](https://github.com/Song-Dust/interface/blob/master/cypress/utils/abihandlers). then register that
 AbiHandler with
 
 ```ts
-cy.setAbiHandler(contractAddress, new YourContractHandler())
+cy.setAbiHandler(contractAddress, YourContractHandler)
 ```
 
 ## example usage
