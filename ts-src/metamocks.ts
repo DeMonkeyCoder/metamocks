@@ -66,7 +66,7 @@ export default class MetaMocks extends Eip1193Bridge {
 
   addEthereumChainSpy(chainId: string) {}
 
-  registerHandler<T extends BaseContract>(address: string, handlerClass: new (...args: any) => AbiHandlerInterface<T>) {
+  registerAbiHandler<T extends BaseContract>(address: string, handlerClass: new (...args: any) => AbiHandlerInterface<T>) {
     const handler = new handlerClass(this.context);
     this.context.setHandler(address, handler);
     return handler;

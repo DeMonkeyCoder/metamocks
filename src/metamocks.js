@@ -101,7 +101,7 @@ var MetaMocks = /** @class */ (function (_super) {
     };
     MetaMocks.prototype.switchEthereumChainSpy = function (chainId) { };
     MetaMocks.prototype.addEthereumChainSpy = function (chainId) { };
-    MetaMocks.prototype.registerHandler = function (address, handlerClass) {
+    MetaMocks.prototype.registerAbiHandler = function (address, handlerClass) {
         var handler = new handlerClass(this.context);
         this.context.setHandler(address, handler);
         return handler;

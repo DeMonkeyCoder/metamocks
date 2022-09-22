@@ -20,7 +20,7 @@ export default class MetaMocks extends Eip1193Bridge {
     on(eventName: string | symbol, listener: (...args: any[]) => void): this;
     switchEthereumChainSpy(chainId: string): void;
     addEthereumChainSpy(chainId: string): void;
-    registerHandler<T extends BaseContract>(address: string, handlerClass: new (...args: any) => AbiHandlerInterface<T>): AbiHandlerInterface<T>;
+    registerAbiHandler<T extends BaseContract>(address: string, handlerClass: new (...args: any) => AbiHandlerInterface<T>): AbiHandlerInterface<T>;
     sendAsync(...args: any[]): Promise<any>;
     getSendArgs(args: any[]): {
         isCallbackForm: boolean;
