@@ -1,19 +1,19 @@
-import AbiHandler from "./abihandler";
-import { formatChainId, keccak256 } from "./utils/abi";
-import { latestBlock } from "./fake-tx-data";
+import { BaseContract } from '@ethersproject/contracts';
+
+import { latestBlock } from './fake-tx-data';
+import { AbiHandlerInterface } from './types';
+import { formatChainId, keccak256 } from './utils/abi';
 
 export default class MetamocksContext {
   chainId: string;
   supportedChainIds: string[];
   latestBlockNumber = 1;
   fakeTransactionIndex = 0;
-  handlers: { [key: string]: AbiHandler } = {};
+  handlers: { [key: string]: AbiHandlerInterface<BaseContract> } = {};
 
   constructor(chainId: number, supportedChainIds?: number[]) {
     this.chainId = formatChainId(String(chainId));
-    this.supportedChainIds = supportedChainIds?.map((cid) =>
-      formatChainId(String(cid))
-    ) || [this.chainId];
+    this.supportedChainIds = supportedChainIds?.map((cid) => formatChainId(String(cid))) || [this.chainId];
   }
 
   getLatestBlock() {
@@ -27,7 +27,7 @@ export default class MetamocksContext {
     return keccak256([this.fakeTransactionIndex++]);
   }
 
-  setHandler(address: string, handler: AbiHandler) {
+  setHandler(address: string, handler: AbiHandlerInterface<BaseContract>) {
     this.handlers[address] = handler;
   }
 }

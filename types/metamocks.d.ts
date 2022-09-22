@@ -1,8 +1,9 @@
-import { Eip1193Bridge } from "@ethersproject/experimental";
-import { ethers } from "ethers";
-import AbiHandler from "./abihandler";
-import { TransactionStatus } from "./enums";
-import MetamocksContext from "./context";
+import { BaseContract } from '@ethersproject/contracts';
+import { Eip1193Bridge } from '@ethersproject/experimental';
+import { ethers } from 'ethers';
+import MetamocksContext from './context';
+import { TransactionStatus } from './enums';
+import { AbiHandlerInterface } from './types';
 export default class MetaMocks extends Eip1193Bridge {
     context: MetamocksContext;
     eventListeners: {
@@ -19,7 +20,7 @@ export default class MetaMocks extends Eip1193Bridge {
     on(eventName: string | symbol, listener: (...args: any[]) => void): this;
     switchEthereumChainSpy(chainId: string): void;
     addEthereumChainSpy(chainId: string): void;
-    setHandler(address: string, handler: AbiHandler): void;
+    registerHandler<T extends BaseContract>(address: string, handlerClass: new (...args: any) => AbiHandlerInterface<T>): AbiHandlerInterface<T>;
     sendAsync(...args: any[]): Promise<any>;
     getSendArgs(args: any[]): {
         isCallbackForm: boolean;

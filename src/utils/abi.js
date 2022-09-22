@@ -1,10 +1,10 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.formatChainId = exports.decodeEthCall = exports.encodeEthResult = exports.keccak256 = void 0;
-var ethers_1 = require("ethers");
 var bignumber_1 = require("@ethersproject/bignumber");
 var bytes_1 = require("@ethersproject/bytes");
-var InputDataDecoder = require("ethereum-input-data-decoder");
+var ethers_1 = require("ethers");
+var InputDataDecoder = require('ethereum-input-data-decoder');
 function keccak256(data) {
     return ethers_1.ethers.utils.keccak256(data);
 }

@@ -1,11 +1,12 @@
-import AbiHandler from "./abihandler";
+import { BaseContract } from '@ethersproject/contracts';
+import { AbiHandlerInterface } from './types';
 export default class MetamocksContext {
     chainId: string;
     supportedChainIds: string[];
     latestBlockNumber: number;
     fakeTransactionIndex: number;
     handlers: {
-        [key: string]: AbiHandler;
+        [key: string]: AbiHandlerInterface<BaseContract>;
     };
     constructor(chainId: number, supportedChainIds?: number[]);
     getLatestBlock(): {
@@ -34,5 +35,5 @@ export default class MetamocksContext {
         number: number;
     };
     getFakeTransactionHash(): string;
-    setHandler(address: string, handler: AbiHandler): void;
+    setHandler(address: string, handler: AbiHandlerInterface<BaseContract>): void;
 }

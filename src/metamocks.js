@@ -54,14 +54,14 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-var abi_1 = require("./utils/abi");
-var fake_tx_data_1 = require("./fake-tx-data");
-var experimental_1 = require("@ethersproject/experimental");
 var bignumber_1 = require("@ethersproject/bignumber");
+var experimental_1 = require("@ethersproject/experimental");
+var context_1 = __importDefault(require("./context"));
+var enums_1 = require("./enums");
+var fake_tx_data_1 = require("./fake-tx-data");
 var messages_1 = require("./messages");
 var utils_1 = require("./utils");
-var enums_1 = require("./enums");
-var context_1 = __importDefault(require("./context"));
+var abi_1 = require("./utils/abi");
 var MetaMocks = /** @class */ (function (_super) {
     __extends(MetaMocks, _super);
     function MetaMocks(signer, chainId, supportedChainIds, provider) {
@@ -101,8 +101,10 @@ var MetaMocks = /** @class */ (function (_super) {
     };
     MetaMocks.prototype.switchEthereumChainSpy = function (chainId) { };
     MetaMocks.prototype.addEthereumChainSpy = function (chainId) { };
-    MetaMocks.prototype.setHandler = function (address, handler) {
+    MetaMocks.prototype.registerHandler = function (address, handlerClass) {
+        var handler = new handlerClass(this.context);
         this.context.setHandler(address, handler);
+        return handler;
     };
     MetaMocks.prototype.sendAsync = function () {
         var args = [];
@@ -116,7 +118,7 @@ var MetaMocks = /** @class */ (function (_super) {
         });
     };
     MetaMocks.prototype.getSendArgs = function (args) {
-        var isCallbackForm = typeof args[0] === "object" && typeof args[1] === "function";
+        var isCallbackForm = typeof args[0] === 'object' && typeof args[1] === 'function';
         var callback;
         var method;
         var params;
@@ -159,14 +161,14 @@ var MetaMocks = /** @class */ (function (_super) {
                         resultIsSet = false;
                         runError = null;
                         errorIsSet = false;
-                        if (!(method === "eth_requestAccounts" || method === "eth_accounts")) return [3 /*break*/, 2];
+                        if (!(method === 'eth_requestAccounts' || method === 'eth_accounts')) return [3 /*break*/, 2];
                         _b = setResult;
                         return [4 /*yield*/, this.signer.getAddress()];
                     case 1:
                         _b.apply(void 0, [[_o.sent()]]);
                         _o.label = 2;
                     case 2:
-                        if (method === "wallet_switchEthereumChain") {
+                        if (method === 'wallet_switchEthereumChain') {
                             this.switchEthereumChainSpy(params[0].chainId);
                             if (this.context.supportedChainIds.includes(params[0].chainId)) {
                                 this.context.chainId = params[0].chainId;
@@ -183,16 +185,16 @@ var MetaMocks = /** @class */ (function (_super) {
                                 setError(error);
                             }
                         }
-                        if (method === "wallet_addEthereumChain") {
+                        if (method === 'wallet_addEthereumChain') {
                             this.addEthereumChainSpy(params[0].chainId);
                             this.context.supportedChainIds.push(params[0].chainId);
                             setResult(null);
                         }
-                        if (method === "eth_chainId") {
+                        if (method === 'eth_chainId') {
                             setResult((0, abi_1.formatChainId)(String(this.context.chainId)));
                         }
-                        if (method === "eth_getBlockByNumber") {
-                            if (params[0] === "latest") {
+                        if (method === 'eth_getBlockByNumber') {
+                            if (params[0] === 'latest') {
                                 setResult(this.context.getLatestBlock());
                             }
                             else {
@@ -202,29 +204,27 @@ var MetaMocks = /** @class */ (function (_super) {
                                 }));
                             }
                         }
-                        if (method === "eth_getTransactionByHash") {
+                        if (method === 'eth_getTransactionByHash') {
                             transactionHash = params[0];
                             setResult(Object.assign(fake_tx_data_1.fakeTransactionByHashResponse, {
                                 hash: transactionHash,
                             }));
                         }
-                        if (method === "eth_getTransactionReceipt") {
+                        if (method === 'eth_getTransactionReceipt') {
                             transactionHash_1 = params[0];
                             latestBlock = this.context.getLatestBlock();
                             resultLocal = Object.assign(fake_tx_data_1.fakeTransactionReceipt, {
                                 transactionHash: transactionHash_1,
                                 blockHash: latestBlock.hash,
                                 blockNumber: latestBlock.number,
-                                logs: fake_tx_data_1.fakeTransactionReceipt.logs.map(function (log) {
-                                    return Object.assign(log, transactionHash_1);
-                                }),
+                                logs: fake_tx_data_1.fakeTransactionReceipt.logs.map(function (log) { return Object.assign(log, transactionHash_1); }),
                             });
                             setResult(resultLocal);
                         }
-                        if (method === "eth_blockNumber") {
+                        if (method === 'eth_blockNumber') {
                             setResult(this.context.getLatestBlock().number);
                         }
-                        if (!(method === "eth_call")) return [3 /*break*/, 6];
+                        if (!(method === 'eth_call')) return [3 /*break*/, 6];
                         _c = [];
                         for (_d in this.context.handlers)
                             _c.push(_d);
@@ -234,7 +234,7 @@ var MetaMocks = /** @class */ (function (_super) {
                         if (!(_e < _c.length)) return [3 /*break*/, 6];
                         contractAddress = _c[_e];
                         if (!(0, utils_1.isTheSameAddress)(contractAddress, params[0].to)) return [3 /*break*/, 5];
-                        return [4 /*yield*/, this.context.handlers[contractAddress].handleCall(this.context, params[0].data, setResult)];
+                        return [4 /*yield*/, this.context.handlers[contractAddress].handleCall(params[0].data, setResult)];
                     case 4:
                         _o.sent();
                         _o.label = 5;
@@ -242,7 +242,7 @@ var MetaMocks = /** @class */ (function (_super) {
                         _e++;
                         return [3 /*break*/, 3];
                     case 6:
-                        if (!(method === "eth_estimateGas")) return [3 /*break*/, 9];
+                        if (!(method === 'eth_estimateGas')) return [3 /*break*/, 9];
                         if (!(this.transactionStatus === enums_1.TransactionStatus.INSUFFICIENT_FUND)) return [3 /*break*/, 8];
                         _f = setError;
                         _g = messages_1.getInsufficientFundGasEstimateError;
@@ -251,10 +251,10 @@ var MetaMocks = /** @class */ (function (_super) {
                         _f.apply(void 0, [_g.apply(void 0, [_o.sent()])]);
                         return [3 /*break*/, 9];
                     case 8:
-                        setResult("0xba7f");
+                        setResult('0xba7f');
                         _o.label = 9;
                     case 9:
-                        if (!(method === "eth_sendTransaction")) return [3 /*break*/, 20];
+                        if (!(method === 'eth_sendTransaction')) return [3 /*break*/, 20];
                         _h = [];
                         for (_j in this.context.handlers)
                             _h.push(_j);
@@ -264,7 +264,7 @@ var MetaMocks = /** @class */ (function (_super) {
                         if (!(_k < _h.length)) return [3 /*break*/, 13];
                         contractAddress = _h[_k];
                         if (!(0, utils_1.isTheSameAddress)(contractAddress, params[0].to)) return [3 /*break*/, 12];
-                        return [4 /*yield*/, this.context.handlers[contractAddress].handleTransaction(this.context, params[0].data, setResult)];
+                        return [4 /*yield*/, this.context.handlers[contractAddress].handleTransaction(params[0].data, setResult)];
                     case 11:
                         _o.sent();
                         _o.label = 12;

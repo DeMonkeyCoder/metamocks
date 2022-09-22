@@ -1,16 +1,14 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-var abi_1 = require("./utils/abi");
 var fake_tx_data_1 = require("./fake-tx-data");
+var abi_1 = require("./utils/abi");
 var MetamocksContext = /** @class */ (function () {
     function MetamocksContext(chainId, supportedChainIds) {
         this.latestBlockNumber = 1;
         this.fakeTransactionIndex = 0;
         this.handlers = {};
         this.chainId = (0, abi_1.formatChainId)(String(chainId));
-        this.supportedChainIds = (supportedChainIds === null || supportedChainIds === void 0 ? void 0 : supportedChainIds.map(function (cid) {
-            return (0, abi_1.formatChainId)(String(cid));
-        })) || [this.chainId];
+        this.supportedChainIds = (supportedChainIds === null || supportedChainIds === void 0 ? void 0 : supportedChainIds.map(function (cid) { return (0, abi_1.formatChainId)(String(cid)); })) || [this.chainId];
     }
     MetamocksContext.prototype.getLatestBlock = function () {
         this.latestBlockNumber++;
