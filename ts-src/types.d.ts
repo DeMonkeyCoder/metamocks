@@ -14,7 +14,7 @@ export type ContractMethods<T extends BaseContract> = BaseContract extends T ? {
 // export type ContractFunctionParameters<T> = T extends (...args: infer P) => any ? P : never;
 export type ContractFunctionReturnType<T> = T extends (...args: any) => Promise<infer R>
   ? // TODO: handle struct return type
-    Promise<R extends [...params: any[]] ? any[] : [R]>
+    Promise<R extends [...params: any[]] ? any[] : (R extends void ? void : [R])>
   : any;
 export type AbiHandlerMethods<T extends BaseContract> = {
   [methodName in keyof ContractMethods<T>]: (
