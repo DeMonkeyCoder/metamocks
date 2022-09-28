@@ -84,7 +84,7 @@ now you can setup metamocks in your tests using `cy.setupMetamocks()` before vis
 
 To mock an abi, you should create an `AbiHanlder` class for it, and implement the mock contract methods there. An
 example AbiHanlders can be
-found [here](https://github.com/Song-Dust/interface/tree/0464e5ebf960074635ba1c85a6ed87008ab76663/cypress/utils/abihandlers). then register that
+found [here](https://github.com/Song-Dust/interface/tree/master/cypress/utils/abihandlers). then register that
 AbiHandler with
 
 ```ts
@@ -93,5 +93,4 @@ metamocks.registerAbiHandler(contractAddress, YourContractHandler)
 if you are using cypress, use `this.metamocks.registerAbiHandler` or `cy.registerAbiHandler`
 ## example usage
 
-visit [this repository](https://github.com/Song-Dust/interface/tree/0464e5ebf960074635ba1c85a6ed87008ab76663/cypress) to see an example usage
-(the link points to the commit that is compatible with the current version)
+visit [this repository](https://github.com/Song-Dust/interface/tree/master/cypress) to see an example usage
