@@ -2,6 +2,7 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 var fake_tx_data_1 = require("./fake-tx-data");
 var abi_1 = require("./utils/abi");
+var keccak256_1 = require("@ethersproject/keccak256");
 var MetamocksContext = /** @class */ (function () {
     function MetamocksContext(chainId, supportedChainIds) {
         this.latestBlockNumber = 1;
@@ -17,7 +18,7 @@ var MetamocksContext = /** @class */ (function () {
         });
     };
     MetamocksContext.prototype.getFakeTransactionHash = function () {
-        return (0, abi_1.keccak256)([this.fakeTransactionIndex++]);
+        return (0, keccak256_1.keccak256)([this.fakeTransactionIndex++]);
     };
     MetamocksContext.prototype.setHandler = function (address, handler) {
         this.handlers[address] = handler;

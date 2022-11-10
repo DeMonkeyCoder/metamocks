@@ -2,7 +2,8 @@ import { BaseContract } from '@ethersproject/contracts';
 
 import { latestBlock } from './fake-tx-data';
 import { AbiHandlerInterface } from './types';
-import { formatChainId, keccak256 } from './utils/abi';
+import { formatChainId } from './utils/abi';
+import { keccak256 } from '@ethersproject/keccak256'
 
 export default class MetamocksContext {
   chainId: string;

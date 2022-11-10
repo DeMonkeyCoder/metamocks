@@ -1,20 +1,15 @@
 import {BigNumber} from '@ethersproject/bignumber';
 import {BytesLike, hexStripZeros} from '@ethersproject/bytes';
 import {BaseContract} from '@ethersproject/contracts';
-import {ethers} from 'ethers';
-
+import {Interface} from "@ethersproject/abi";
 const InputDataDecoder = require('ethereum-input-data-decoder');
-
-export function keccak256(data: BytesLike): string {
-    return ethers.utils.keccak256(data);
-}
 
 export function encodeFunctionResult<T extends BaseContract>(
     abi: any,
     funcName: string,
     result: (BigNumber | string | number)[],
 ) {
-    const iface = new ethers.utils.Interface(abi);
+    const iface = new Interface(abi);
     return iface.encodeFunctionResult(funcName, result);
 }
 
@@ -23,7 +18,7 @@ export function decodeFunctionResult<T extends BaseContract>(
     funcName: string,
     result: BytesLike,
 ) {
-    const iface = new ethers.utils.Interface(abi);
+    const iface = new Interface(abi);
     return iface.decodeFunctionResult(funcName, result);
 }
 
@@ -40,7 +35,7 @@ export function encodeFunctionData<T extends BaseContract>(
     funcName: string,
     values?: ReadonlyArray<any>,
 ) {
-    const iface = new ethers.utils.Interface(abi);
+    const iface = new Interface(abi);
     return iface.encodeFunctionData(funcName, values);
 }
 
