@@ -16,8 +16,10 @@ export class Erc20AbiHandler extends AbiHandler<Erc20> implements AbiHandlerInte
         throw new Error('Method not implemented.');
     }
 
-    approve(decodedInput: any[]): Promise<[true] | [false]> {
-        throw new Error('Method not implemented.');
+    async approve(decodedInput: any[]): Promise<[true] | [false]> {
+        const [spender, _value] = decodedInput;
+        this.allowedList.push(spender);
+        return [true];
     }
 
     totalSupply(decodedInput: any[]): Promise<[BigNumber]> {
@@ -44,8 +46,9 @@ export class Erc20AbiHandler extends AbiHandler<Erc20> implements AbiHandlerInte
         throw new Error('Method not implemented.');
     }
 
-    allowance(decodedInput: any[]): Promise<[BigNumber]> {
-        throw new Error('Method not implemented.');
+    async allowance(decodedInput: any[]): Promise<[BigNumber]> {
+        const [_owner, spender] = decodedInput;
+        return [this.allowedList.includes(spender) ? MaxUint256 : Zero];
     }
 }
 

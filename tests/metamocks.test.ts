@@ -2,7 +2,7 @@ import {expect} from "chai";
 import MetaMocks from "../ts-src";
 import {JsonRpcProvider} from "@ethersproject/providers";
 import {Wallet} from "@ethersproject/wallet";
-import {Erc20AbiHandlerAllowAll} from "./test-utils/abihandlers/Erc20";
+import {Erc20AbiHandler, Erc20AbiHandlerAllowAll} from "./test-utils/abihandlers/Erc20";
 import {Erc20} from "./test-utils/abis/types";
 import {
     CHAIN_ID,
@@ -12,6 +12,7 @@ import {
     TEST_PRIVATE_KEY
 } from "./test-utils/data";
 import {encodeFunctionData} from "../ts-src/utils/abi";
+import {MaxUint256} from "@ethersproject/constants";
 
 describe("Metamocks", () => {
 
@@ -47,8 +48,34 @@ describe("Metamocks", () => {
     it("can read data from test contract", async () => {
         const erc20AbiHandler = metamocks.registerAbiHandler<Erc20>(TEST_CONTRACT_ADDRESS, Erc20AbiHandlerAllowAll)
         const allowanceCall = encodeFunctionData(erc20AbiHandler.abi, 'allowance', [TEST_ADDRESS_NEVER_USE, TEST_CONTRACT_ADDRESS2])
-        const res = metamocks.send('eth_call', [{to: TEST_CONTRACT_ADDRESS, data: allowanceCall}, 1])
-        const callRes = await res;
-        expect(callRes).to.eq('0xffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff')
+        const res = await metamocks.send('eth_call', [{to: TEST_CONTRACT_ADDRESS, data: allowanceCall}, 1])
+        expect(res).to.eq('0xffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff')
+    })
+
+
+    it("can send transaction to the test contract", async () => {
+        const erc20AbiHandler = metamocks.registerAbiHandler<Erc20>(TEST_CONTRACT_ADDRESS, Erc20AbiHandler)
+
+        // before transaction
+        const firstAllowanceCall = encodeFunctionData(erc20AbiHandler.abi, 'allowance', [TEST_ADDRESS_NEVER_USE, TEST_CONTRACT_ADDRESS2])
+        const firstResult = await metamocks.send('eth_call', [{to: TEST_CONTRACT_ADDRESS, data: firstAllowanceCall}, 1])
+        expect(firstResult).to.eq('0x0000000000000000000000000000000000000000000000000000000000000000')
+
+
+        // transaction
+        const approveTransaction = encodeFunctionData(erc20AbiHandler.abi, 'approve', [TEST_CONTRACT_ADDRESS2, MaxUint256])
+        const transactionHas = await metamocks.send('eth_sendTransaction', [{
+            to: TEST_CONTRACT_ADDRESS,
+            data: approveTransaction
+        }, 1])
+        expect(transactionHas).to.have.length(66)
+
+        // after transaction
+        const secondAllowanceCall = encodeFunctionData(erc20AbiHandler.abi, 'allowance', [TEST_ADDRESS_NEVER_USE, TEST_CONTRACT_ADDRESS2])
+        const secondResult = await metamocks.send('eth_call', [{
+            to: TEST_CONTRACT_ADDRESS,
+            data: secondAllowanceCall
+        }, 1])
+        expect(secondResult).to.eq('0xffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff')
     })
 });
