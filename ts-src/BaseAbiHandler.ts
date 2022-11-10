@@ -1,10 +1,10 @@
 import { BaseContract } from '@ethersproject/contracts';
 
 import MetamocksContext from './context';
-import { AbiHandlerInterface } from './types';
-import { decodeEthCall, encodeEthResult } from './utils/abi';
+import {AbiHandlerInterface, BaseHandlerInterface} from './types';
+import { decodeFunctionCall, encodeFunctionResult } from './utils/abi';
 
-export default class BaseAbiHandler<T extends BaseContract> implements AbiHandlerInterface<BaseContract> {
+export default class BaseAbiHandler<T extends BaseContract> implements BaseHandlerInterface {
   abi: any[] = [];
   context: MetamocksContext;
 
@@ -16,10 +16,10 @@ export default class BaseAbiHandler<T extends BaseContract> implements AbiHandle
   }
 
   async handleCall(data: string, setResult?: (result: string) => void) {
-    const decoded = decodeEthCall<T>(this.abi, data);
+    const decoded = decodeFunctionCall<T>(this.abi, data);
     const res: any = await (this as unknown as AbiHandlerInterface<T>)[decoded.method](decoded.inputs);
     if (setResult) {
-      setResult(encodeEthResult(this.abi, decoded.method as string, res));
+      setResult(encodeFunctionResult(this.abi, decoded.method as string, res));
     }
   }
 

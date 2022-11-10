@@ -9,7 +9,7 @@ export function keccak256(data: BytesLike): string {
   return ethers.utils.keccak256(data);
 }
 
-export function encodeEthResult<T extends BaseContract>(
+export function encodeFunctionResult<T extends BaseContract>(
   abi: any,
   funcName: string,
   result: (BigNumber | string | number)[],
@@ -25,7 +25,17 @@ export type DecodedCall<T extends BaseContract> = {
   types: any[];
 };
 
-export function decodeEthCall<T extends BaseContract>(abi: any, input: any): DecodedCall<T> {
+
+export function encodeFunctionData<T extends BaseContract>(
+    abi: any,
+    funcName: string,
+    values?: ReadonlyArray<any>,
+) {
+  const iface = new ethers.utils.Interface(abi);
+  return iface.encodeFunctionData(funcName, values);
+}
+
+export function decodeFunctionCall<T extends BaseContract>(abi: any, input: any): DecodedCall<T> {
   const decoder = new InputDataDecoder(abi);
   return decoder.decodeData(input);
 }

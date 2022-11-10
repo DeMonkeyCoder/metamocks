@@ -1,7 +1,7 @@
 import { BaseContract } from '@ethersproject/contracts';
 import MetamocksContext from './context';
-import { AbiHandlerInterface } from './types';
-export default class BaseAbiHandler<T extends BaseContract> implements AbiHandlerInterface<BaseContract> {
+import { BaseHandlerInterface } from './types';
+export default class BaseAbiHandler<T extends BaseContract> implements BaseHandlerInterface {
     abi: any[];
     context: MetamocksContext;
     constructor(context: MetamocksContext, abi?: any[]);
