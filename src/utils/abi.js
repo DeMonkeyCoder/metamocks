@@ -1,6 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.formatChainId = exports.decodeEthCall = exports.encodeEthResult = exports.keccak256 = void 0;
+exports.formatChainId = exports.decodeFunctionCall = exports.encodeFunctionData = exports.decodeFunctionResult = exports.encodeFunctionResult = exports.keccak256 = void 0;
 var bignumber_1 = require("@ethersproject/bignumber");
 var bytes_1 = require("@ethersproject/bytes");
 var ethers_1 = require("ethers");
@@ -9,16 +9,26 @@ function keccak256(data) {
     return ethers_1.ethers.utils.keccak256(data);
 }
 exports.keccak256 = keccak256;
-function encodeEthResult(abi, funcName, result) {
+function encodeFunctionResult(abi, funcName, result) {
     var iface = new ethers_1.ethers.utils.Interface(abi);
     return iface.encodeFunctionResult(funcName, result);
 }
-exports.encodeEthResult = encodeEthResult;
-function decodeEthCall(abi, input) {
+exports.encodeFunctionResult = encodeFunctionResult;
+function decodeFunctionResult(abi, funcName, result) {
+    var iface = new ethers_1.ethers.utils.Interface(abi);
+    return iface.decodeFunctionResult(funcName, result);
+}
+exports.decodeFunctionResult = decodeFunctionResult;
+function encodeFunctionData(abi, funcName, values) {
+    var iface = new ethers_1.ethers.utils.Interface(abi);
+    return iface.encodeFunctionData(funcName, values);
+}
+exports.encodeFunctionData = encodeFunctionData;
+function decodeFunctionCall(abi, input) {
     var decoder = new InputDataDecoder(abi);
     return decoder.decodeData(input);
 }
-exports.decodeEthCall = decodeEthCall;
+exports.decodeFunctionCall = decodeFunctionCall;
 function formatChainId(chainId) {
     return (0, bytes_1.hexStripZeros)(bignumber_1.BigNumber.from(chainId).toHexString());
 }

@@ -5,7 +5,9 @@
   "main": "./src/index.js",
   "types": "./types/index.d.ts",
   "scripts": {
-    "contracts:compile": "typechain --target ethers-v5 --out-dir tests/test-utils/abis/types \\\"./tests/abis/**/*.json\\\"",
+    "contracts:compile:uniswaphelpers": "typechain --target ethers-v5 --out-dir tests/test-utils/abis/types/uniswap \"./node_modules/@uniswap/v3-periphery/artifacts/contracts/lens/UniswapInterfaceMulticall.sol/UniswapInterfaceMulticall.json\"",
+    "contracts:compile:abi": "typechain --target ethers-v5 --out-dir tests/test-utils/abis/types \"./tests/test-utils/**/*.json\"",
+    "contracts:compile": "yarn contracts:compile:abi && yarn contracts:compile:uniswaphelpers",
     "prepare": "yarn contracts:compile",
     "build": "tsc -p ./tsconfig.json",
     "format": "npm run prettier -- --write",
@@ -52,6 +54,7 @@
     "@typechain/ethers-v5": "^10.0.0",
     "@types/chai": "^4.3.3",
     "@types/mocha": "^9.1.1",
+    "@uniswap/v3-periphery": "^1.4.1",
     "chai": "^4.3.6",
     "mocha": "^10.0.0",
     "nyc": "^15.1.0",

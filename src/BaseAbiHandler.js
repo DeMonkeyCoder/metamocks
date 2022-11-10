@@ -51,12 +51,12 @@ var BaseAbiHandler = /** @class */ (function () {
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
-                        decoded = (0, abi_1.decodeEthCall)(this.abi, data);
+                        decoded = (0, abi_1.decodeFunctionCall)(this.abi, data);
                         return [4 /*yield*/, this[decoded.method](decoded.inputs)];
                     case 1:
                         res = _a.sent();
                         if (setResult) {
-                            setResult((0, abi_1.encodeEthResult)(this.abi, decoded.method, res));
+                            setResult((0, abi_1.encodeFunctionResult)(this.abi, decoded.method, res));
                         }
                         return [2 /*return*/];
                 }

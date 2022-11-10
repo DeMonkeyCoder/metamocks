@@ -3,4 +3,4 @@ export { default as MetamocksContext } from './context';
 export { default } from './metamocks';
 export { AbiHandlerInterface } from './types';
 export { isTheSameAddress } from './utils';
-export { decodeEthCall, encodeEthResult } from './utils/abi';
+export { decodeFunctionCall, encodeFunctionResult } from './utils/abi';

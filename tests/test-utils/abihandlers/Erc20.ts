@@ -4,7 +4,7 @@ import {AbiHandler, AbiHandlerInterface} from '../../../ts-src';
 
 import ERC20_ABI from '../abis/erc20.json';
 import {Erc20} from '../abis/types';
-import {TEST_CONTRACT_ADDRESS2} from "../data";
+import {TEST_CONTRACT_ADDRESS, TOKEN_BALANCE} from "../data";
 
 export const tokenBalance = BigNumber.from(10).pow(16);
 
@@ -34,8 +34,9 @@ export class Erc20AbiHandler extends AbiHandler<Erc20> implements AbiHandlerInte
         throw new Error('Method not implemented.');
     }
 
-    balanceOf(decodedInput: any[]): Promise<[BigNumber]> {
-        throw new Error('Method not implemented.');
+    async balanceOf(decodedInput: any[]): Promise<[BigNumber]> {
+        const [_owner] = decodedInput;
+        return [TOKEN_BALANCE];
     }
 
     symbol(decodedInput: any[]): Promise<[string]> {
@@ -55,7 +56,7 @@ export class Erc20AbiHandler extends AbiHandler<Erc20> implements AbiHandlerInte
 export class Erc20AbiHandlerAllowAll extends Erc20AbiHandler {
     async allowance(decodedInput: any[]): Promise<[BigNumber]> {
         const [_onwer, spender] = decodedInput
-        if ('0x' + spender === TEST_CONTRACT_ADDRESS2) {
+        if ('0x' + spender === TEST_CONTRACT_ADDRESS) {
             return [MaxUint256];
         }
         return [Zero]
