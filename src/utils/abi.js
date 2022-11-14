@@ -4,7 +4,7 @@ exports.formatChainId = exports.decodeFunctionCall = exports.encodeFunctionData 
 var bignumber_1 = require("@ethersproject/bignumber");
 var bytes_1 = require("@ethersproject/bytes");
 var abi_1 = require("@ethersproject/abi");
-var InputDataDecoder = require('ethereum-input-data-decoder');
+var InputDataDecoder = require("ethereum-input-data-decoder");
 function encodeFunctionResult(abi, funcName, result) {
     var iface = new abi_1.Interface(abi);
     return iface.encodeFunctionResult(funcName, result);
@@ -22,7 +22,12 @@ function encodeFunctionData(abi, funcName, values) {
 exports.encodeFunctionData = encodeFunctionData;
 function decodeFunctionCall(abi, input) {
     var decoder = new InputDataDecoder(abi);
-    return decoder.decodeData(input);
+    var method = decoder.decodeData(input).method;
+    var iface = new abi_1.Interface(abi);
+    return {
+        method: method,
+        inputs: iface.decodeFunctionData(method, input),
+    };
 }
 exports.decodeFunctionCall = decodeFunctionCall;
 function formatChainId(chainId) {

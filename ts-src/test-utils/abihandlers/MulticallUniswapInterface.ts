@@ -1,14 +1,9 @@
 import { BigNumber } from "@ethersproject/bignumber";
 import MulticallJson from "@uniswap/v3-periphery/artifacts/contracts/lens/UniswapInterfaceMulticall.sol/UniswapInterfaceMulticall.json";
-import {
-  AbiHandler,
-  AbiHandlerInterface,
-  decodeFunctionCall,
-  encodeFunctionResult,
-  isTheSameAddress,
-} from "../../index";
+import { AbiHandler, AbiHandlerInterface, isTheSameAddress } from "../../index";
 
 import { UniswapInterfaceMulticall } from "../abis/types/uniswap";
+import { CallOverrides } from "ethers";
 
 const { abi: MulticallABI } = MulticallJson;
 
@@ -18,13 +13,63 @@ export default class MulticallUniswapAbiHandler
 {
   abi = MulticallABI;
 
-  getCurrentBlockTimestamp(decodedInput: any[]): Promise<[BigNumber]> {
+  getCurrentBlockTimestamp(
+    overrides: CallOverrides | undefined
+  ): Promise<BigNumber> {
     throw new Error("Method not implemented.");
   }
 
-  getEthBalance(decodedInput: any[]): Promise<[BigNumber]> {
+  getEthBalance(
+    addr: string,
+    overrides: CallOverrides | undefined
+  ): Promise<BigNumber> {
     throw new Error("Method not implemented.");
   }
+
+  async multicall(
+    calls: UniswapInterfaceMulticall.CallStruct[],
+    overrides: CallOverrides | undefined
+  ): Promise<
+    [BigNumber, UniswapInterfaceMulticall.ResultStructOutput[]] & {
+      blockNumber: BigNumber;
+      returnData: UniswapInterfaceMulticall.ResultStructOutput[];
+    }
+  > {
+    const results: UniswapInterfaceMulticall.ResultStructOutput[] = [];
+    for (const call of calls) {
+      const { target, gasLimit, callData } = call;
+      for (const contractAddress in this.context.handlers) {
+        if (isTheSameAddress(contractAddress, target)) {
+          await this.context.handlers[contractAddress].handleCall(
+            callData,
+            (r: string) => {
+              const res = Object.assign(
+                {
+                  success: true,
+                  gasUsed: BigNumber.from(gasLimit),
+                  returnData: r,
+                },
+                [true, BigNumber.from(gasLimit), r]
+              ) as UniswapInterfaceMulticall.ResultStructOutput;
+              results.push(res);
+            }
+          );
+        }
+      }
+    }
+    return Object.assign(
+      {
+        blockNumber: BigNumber.from(this.context.getLatestBlock().number),
+        returnData: results,
+      },
+      [BigNumber.from(this.context.getLatestBlock().number), results]
+    ) as [BigNumber, UniswapInterfaceMulticall.ResultStructOutput[]] & {
+      blockNumber: BigNumber;
+      returnData: UniswapInterfaceMulticall.ResultStructOutput[];
+    };
+  }
+}
+/*
 
   async multicall(decodedInput: any[]) {
     const [calls] = decodedInput;
@@ -43,12 +88,4 @@ export default class MulticallUniswapAbiHandler
     return [this.context.getLatestBlock().number, results];
   }
 
-  async handleCall(data: string, setResult?: (result: string) => void) {
-    const decoded = decodeFunctionCall<UniswapInterfaceMulticall>(
-      this.abi,
-      data
-    );
-    const res: any = await this[decoded.method](decoded.inputs);
-    setResult?.(encodeFunctionResult(this.abi, decoded.method as string, res));
-  }
-}
+ */

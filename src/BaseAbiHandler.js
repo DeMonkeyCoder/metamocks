@@ -47,16 +47,31 @@ var BaseAbiHandler = /** @class */ (function () {
     }
     BaseAbiHandler.prototype.handleCall = function (data, setResult) {
         return __awaiter(this, void 0, void 0, function () {
-            var decoded, res;
-            return __generator(this, function (_a) {
-                switch (_a.label) {
+            var decoded, res, isLikeArray, filterArray;
+            var _a;
+            return __generator(this, function (_b) {
+                switch (_b.label) {
                     case 0:
                         decoded = (0, abi_1.decodeFunctionCall)(this.abi, data);
-                        return [4 /*yield*/, this[decoded.method](decoded.inputs)];
+                        return [4 /*yield*/, (_a = this)[decoded.method].apply(_a, decoded.inputs)];
                     case 1:
-                        res = _a.sent();
+                        res = _b.sent();
+                        isLikeArray = function (obj) {
+                            return obj[0] !== undefined && typeof obj !== "string";
+                        };
+                        filterArray = function (arr) {
+                            if (!isLikeArray(arr))
+                                return arr;
+                            var a = [];
+                            var i = 0;
+                            while (arr[i] !== undefined) {
+                                a.push(filterArray(arr[i]));
+                                i++;
+                            }
+                            return a;
+                        };
                         if (setResult) {
-                            setResult((0, abi_1.encodeFunctionResult)(this.abi, decoded.method, res));
+                            setResult((0, abi_1.encodeFunctionResult)(this.abi, decoded.method, isLikeArray(res) ? filterArray(res) : [res]));
                         }
                         return [2 /*return*/];
                 }

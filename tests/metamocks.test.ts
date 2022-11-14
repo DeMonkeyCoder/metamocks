@@ -78,6 +78,29 @@ describe("Metamocks", () => {
     );
   });
 
+  it("can read test contract by multicall", async () => {
+    metamocks.registerAbiHandler<Erc20>(
+      TEST_ERC20_CONTRACT_ADDRESS,
+      Erc20AbiHandler
+    );
+    metamocks.registerAbiHandler<UniswapInterfaceMulticall>(
+      TEST_MULTICALL_CONTRACT_ADDRESS,
+      MulticallUniswapAbiHandler
+    );
+    const balanceCall = encodeFunctionData(ERC20_ABI, "balanceOf", [
+      TEST_ADDRESS_NEVER_USE,
+    ]);
+    const calls = [[TEST_ERC20_CONTRACT_ADDRESS, 10, balanceCall]];
+    const multicall = encodeFunctionData(MulticallABI, "multicall", [calls]);
+    const res = await metamocks.send("eth_call", [
+      { to: TEST_MULTICALL_CONTRACT_ADDRESS, data: multicall },
+      1,
+    ]);
+    const decoded = decodeFunctionResult(MulticallABI, "multicall", res);
+    expect(BigNumber.from(decoded.returnData[0].returnData).eq(TOKEN_BALANCE))
+      .to.be.true;
+  });
+
   function sendApproveTransaction() {
     const approveTransaction = encodeFunctionData(ERC20_ABI, "approve", [
       TEST_CONTRACT_ADDRESS,
@@ -113,28 +136,5 @@ describe("Metamocks", () => {
     expect(secondResult).to.eq(
       "0xffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff"
     );
-  });
-
-  it("can read test contract by multicall", async () => {
-    metamocks.registerAbiHandler<Erc20>(
-      TEST_ERC20_CONTRACT_ADDRESS,
-      Erc20AbiHandler
-    );
-    metamocks.registerAbiHandler<UniswapInterfaceMulticall>(
-      TEST_MULTICALL_CONTRACT_ADDRESS,
-      MulticallUniswapAbiHandler
-    );
-    const balanceCall = encodeFunctionData(ERC20_ABI, "balanceOf", [
-      TEST_ADDRESS_NEVER_USE,
-    ]);
-    const calls = [[TEST_ERC20_CONTRACT_ADDRESS, 10, balanceCall]];
-    const multicall = encodeFunctionData(MulticallABI, "multicall", [calls]);
-    const res = await metamocks.send("eth_call", [
-      { to: TEST_MULTICALL_CONTRACT_ADDRESS, data: multicall },
-      1,
-    ]);
-    const decoded = decodeFunctionResult(MulticallABI, "multicall", res);
-    expect(BigNumber.from(decoded.returnData[0].returnData).eq(TOKEN_BALANCE))
-      .to.be.true;
   });
 });
