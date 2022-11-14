@@ -1,12 +1,12 @@
 {
   "name": "metamocks",
-  "version": "0.6.6",
+  "version": "0.6.7",
   "description": "a utility to mock metamask mainly for e2e testing",
   "main": "./src/index.js",
   "types": "./types/index.d.ts",
   "scripts": {
-    "contracts:compile:uniswaphelpers": "typechain --target ethers-v5 --out-dir tests/test-utils/abis/types/uniswap \"./node_modules/@uniswap/v3-periphery/artifacts/contracts/lens/UniswapInterfaceMulticall.sol/UniswapInterfaceMulticall.json\"",
-    "contracts:compile:abi": "typechain --target ethers-v5 --out-dir tests/test-utils/abis/types \"./tests/test-utils/**/*.json\"",
+    "contracts:compile:uniswaphelpers": "typechain --target ethers-v5 --out-dir ts-src/test-utils/abis/types/uniswap \\\"./node_modules/@uniswap/v3-periphery/artifacts/contracts/lens/UniswapInterfaceMulticall.sol/UniswapInterfaceMulticall.json\\\"",
+    "contracts:compile:abi": "typechain --target ethers-v5 --out-dir ts-src/test-utils/abis/types \\\"./tests/test-utils/**/*.json\\\"",
     "contracts:compile": "yarn contracts:compile:abi && yarn contracts:compile:uniswaphelpers",
     "prepare": "yarn contracts:compile",
     "build": "tsc -p ./tsconfig.json",

@@ -22,6 +22,7 @@
     "ts-src/**/*.ts"
   ],
   "exclude": [
+    "ts-src/test-utils/**/*",
     "**/*.spec.ts",
     "node_modules/**/*"
   ]
