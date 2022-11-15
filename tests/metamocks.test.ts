@@ -1,7 +1,5 @@
 import { expect } from "chai";
 import MetaMocks from "../ts-src";
-import { JsonRpcProvider } from "@ethersproject/providers";
-import { Wallet } from "@ethersproject/wallet";
 import {
   Erc20AbiHandler,
   Erc20AbiHandlerAllowAll,
@@ -29,12 +27,7 @@ const { abi: MulticallABI } = MulticallJson;
 describe("Metamocks", () => {
   let metamocks: MetaMocks;
   beforeEach(() => {
-    const provider = new JsonRpcProvider(
-      "https://goerli.infura.io/v3/9aa3d95b3bc440fa88ea12eaa4456161",
-      CHAIN_ID
-    );
-    const signer = new Wallet(TEST_PRIVATE_KEY, provider);
-    metamocks = new MetaMocks(signer, CHAIN_ID);
+    metamocks = new MetaMocks(TEST_PRIVATE_KEY, CHAIN_ID);
   });
 
   it("can get instance", () => {
