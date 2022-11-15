@@ -1,6 +1,6 @@
 {
   "name": "metamocks",
-  "version": "0.7.0",
+  "version": "0.7.1",
   "description": "a utility to mock metamask mainly for e2e testing",
   "main": "./src/index.js",
   "types": "./types/index.d.ts",
@@ -44,7 +44,7 @@
   "dependencies": {
     "@ethersproject/bignumber": "^5.7.0",
     "@ethersproject/bytes": "^5.7.0",
-    "@ethersproject/experimental": "^5.7.0",
+    "@ethersproject/experimental": "^5.4.0",
     "ethereum-input-data-decoder": "^0.4.2",
     "ethers": "^5.7.0"
   },
