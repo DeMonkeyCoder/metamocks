@@ -1,31 +1,31 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.formatChainId = exports.decodeFunctionCall = exports.encodeFunctionData = exports.decodeFunctionResult = exports.encodeFunctionResult = void 0;
-var bignumber_1 = require("@ethersproject/bignumber");
-var bytes_1 = require("@ethersproject/bytes");
-var abi_1 = require("@ethersproject/abi");
-var InputDataDecoder = require("ethereum-input-data-decoder");
+const bignumber_1 = require("@ethersproject/bignumber");
+const bytes_1 = require("@ethersproject/bytes");
+const abi_1 = require("@ethersproject/abi");
+const InputDataDecoder = require("ethereum-input-data-decoder");
 function encodeFunctionResult(abi, funcName, result) {
-    var iface = new abi_1.Interface(abi);
+    const iface = new abi_1.Interface(abi);
     return iface.encodeFunctionResult(funcName, result);
 }
 exports.encodeFunctionResult = encodeFunctionResult;
 function decodeFunctionResult(abi, funcName, result) {
-    var iface = new abi_1.Interface(abi);
+    const iface = new abi_1.Interface(abi);
     return iface.decodeFunctionResult(funcName, result);
 }
 exports.decodeFunctionResult = decodeFunctionResult;
 function encodeFunctionData(abi, funcName, values) {
-    var iface = new abi_1.Interface(abi);
+    const iface = new abi_1.Interface(abi);
     return iface.encodeFunctionData(funcName, values);
 }
 exports.encodeFunctionData = encodeFunctionData;
 function decodeFunctionCall(abi, input) {
-    var decoder = new InputDataDecoder(abi);
-    var method = decoder.decodeData(input).method;
-    var iface = new abi_1.Interface(abi);
+    const decoder = new InputDataDecoder(abi);
+    const { method } = decoder.decodeData(input);
+    const iface = new abi_1.Interface(abi);
     return {
-        method: method,
+        method,
         inputs: iface.decodeFunctionData(method, input),
     };
 }

@@ -1,8 +1,8 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.TOKEN_BALANCE = exports.CHAIN_ID = exports.TEST_CONTRACT_ADDRESS = exports.TEST_MULTICALL_CONTRACT_ADDRESS = exports.TEST_ERC20_CONTRACT_ADDRESS = exports.TEST_ADDRESS_NEVER_USE = exports.TEST_PRIVATE_KEY = void 0;
-var wallet_1 = require("@ethersproject/wallet");
-var bignumber_1 = require("@ethersproject/bignumber");
+const wallet_1 = require("@ethersproject/wallet");
+const bignumber_1 = require("@ethersproject/bignumber");
 exports.TEST_PRIVATE_KEY = "0xe580410d7c37d26c6ad1a837bbae46bc27f9066a466fb3a66e770523b4666d19";
 exports.TEST_ADDRESS_NEVER_USE = new wallet_1.Wallet(exports.TEST_PRIVATE_KEY).address;
 exports.TEST_ERC20_CONTRACT_ADDRESS = "0x15F2d9E865f8b2FFF525fE07c9cAdC7855F93eF7";
