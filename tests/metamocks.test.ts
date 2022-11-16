@@ -21,18 +21,13 @@ import ERC20_ABI from "../ts-src/test-utils/abis/erc20.json";
 import { UniswapInterfaceMulticall } from "../ts-src/test-utils/abis/types/uniswap";
 import MulticallUniswapAbiHandler from "../ts-src/test-utils/abihandlers/MulticallUniswapInterface";
 import { BigNumber } from "ethers";
-import { JsonRpcProvider } from "@ethersproject/providers";
 
 const { abi: MulticallABI } = MulticallJson;
 
 describe("Metamocks", () => {
   let metamocks: MetaMocks;
   beforeEach(() => {
-    const provider = new JsonRpcProvider(
-      "https://goerli.infura.io/v3/4bf032f2d38a4ed6bb975b80d6340847",
-      4
-    );
-    metamocks = new MetaMocks(TEST_PRIVATE_KEY, CHAIN_ID, provider);
+    metamocks = new MetaMocks(TEST_PRIVATE_KEY, CHAIN_ID);
   });
 
   it("can get instance", () => {

@@ -3,7 +3,6 @@ import { Eip1193Bridge } from "@ethersproject/experimental";
 import MetamocksContext from "./context";
 import { TransactionStatus } from "./enums";
 import { AbiHandlerInterface } from "./types";
-import { Provider } from "@ethersproject/abstract-provider";
 export default class MetaMocks extends Eip1193Bridge {
     context: MetamocksContext;
     eventListeners: {
@@ -14,7 +13,7 @@ export default class MetaMocks extends Eip1193Bridge {
     };
     transactionStatus: TransactionStatus;
     transactionWaitTime: number;
-    constructor(signerWalletPrivateKey: string, chainId: number, provider?: Provider, supportedChainIds?: number[]);
+    constructor(signerWalletPrivateKey: string, chainId: number, rpcUrl?: string, supportedChainIds?: number[]);
     setTransactionStatus(status: TransactionStatus): void;
     setTransactionWaitTime(waitTime: number): void;
     on(eventName: string | symbol, listener: (...args: any[]) => void): this;
