@@ -18,9 +18,9 @@ import {
 import { AbiHandlerInterface } from "./types";
 import { enumKeys, isTheSameAddress, sleep } from "./utils";
 import { formatChainId } from "./utils/abi";
-import { JsonRpcProvider } from "@ethersproject/providers";
-import { CHAIN_ID, TEST_PRIVATE_KEY } from "./test-utils/data";
+import { TEST_PRIVATE_KEY } from "./test-utils/data";
 import { Wallet } from "@ethersproject/wallet";
+import { Provider } from "@ethersproject/abstract-provider";
 
 export default class MetaMocks extends Eip1193Bridge {
   context: MetamocksContext;
@@ -47,10 +47,9 @@ export default class MetaMocks extends Eip1193Bridge {
   constructor(
     signerWalletPrivateKey: string,
     chainId: number,
-    rpcUrl = "",
+    provider?: Provider,
     supportedChainIds?: number[]
   ) {
-    const provider = new JsonRpcProvider(rpcUrl, CHAIN_ID);
     const signer = new Wallet(TEST_PRIVATE_KEY, provider);
     super(signer, provider);
     this.context = new MetamocksContext(chainId, supportedChainIds);

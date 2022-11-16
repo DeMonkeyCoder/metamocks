@@ -20,12 +20,10 @@ const fake_tx_data_1 = require("./fake-tx-data");
 const messages_1 = require("./messages");
 const utils_1 = require("./utils");
 const abi_1 = require("./utils/abi");
-const providers_1 = require("@ethersproject/providers");
 const data_1 = require("./test-utils/data");
 const wallet_1 = require("@ethersproject/wallet");
 class MetaMocks extends experimental_1.Eip1193Bridge {
-    constructor(signerWalletPrivateKey, chainId, rpcUrl = "", supportedChainIds) {
-        const provider = new providers_1.JsonRpcProvider(rpcUrl, data_1.CHAIN_ID);
+    constructor(signerWalletPrivateKey, chainId, provider, supportedChainIds) {
         const signer = new wallet_1.Wallet(data_1.TEST_PRIVATE_KEY, provider);
         super(signer, provider);
         this.eventListeners = {
