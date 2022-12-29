@@ -21,18 +21,21 @@ const messages_1 = require("./messages");
 const utils_1 = require("./utils");
 const abi_1 = require("./utils/abi");
 const providers_1 = require("@ethersproject/providers");
-const data_1 = require("./test-utils/data");
 const wallet_1 = require("@ethersproject/wallet");
 class MetaMocks extends experimental_1.Eip1193Bridge {
     constructor(signerWalletPrivateKey, chainId, rpcUrl = "", supportedChainIds) {
-        const provider = new providers_1.JsonRpcProvider(rpcUrl, data_1.CHAIN_ID);
-        const signer = new wallet_1.Wallet(data_1.TEST_PRIVATE_KEY, provider);
+        const provider = new providers_1.JsonRpcProvider(rpcUrl, chainId);
+        const signer = new wallet_1.Wallet(signerWalletPrivateKey, provider);
         super(signer, provider);
         this.eventListeners = {
-            [enums_1.EventHandlerKey.CHAIN_CHANGED]: function handleChainChanged(chainId) { },
-            [enums_1.EventHandlerKey.ACCOUNTS_CHANGED]: function handleAccountsChanged(accounts) { },
-            [enums_1.EventHandlerKey.CLOSE]: function handleClose(code, reason) { },
-            [enums_1.EventHandlerKey.NETWORK_CHANGED]: function handleNetworkChanged(networkId) { },
+            [enums_1.EventHandlerKey.CHAIN_CHANGED]: function handleChainChanged(chainId) {
+            },
+            [enums_1.EventHandlerKey.ACCOUNTS_CHANGED]: function handleAccountsChanged(accounts) {
+            },
+            [enums_1.EventHandlerKey.CLOSE]: function handleClose(code, reason) {
+            },
+            [enums_1.EventHandlerKey.NETWORK_CHANGED]: function handleNetworkChanged(networkId) {
+            },
         };
         this.transactionStatus = enums_1.TransactionStatus.SUCCESS;
         this.transactionWaitTime = 0;
@@ -58,8 +61,10 @@ class MetaMocks extends experimental_1.Eip1193Bridge {
         }
         return this;
     }
-    switchEthereumChainSpy(chainId) { }
-    addEthereumChainSpy(chainId) { }
+    switchEthereumChainSpy(chainId) {
+    }
+    addEthereumChainSpy(chainId) {
+    }
     registerAbiHandler(address, handlerClass) {
         const handler = new handlerClass(this.context);
         this.context.setHandler(address, handler);

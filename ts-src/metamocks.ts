@@ -1,9 +1,9 @@
-import { BigNumber } from "@ethersproject/bignumber";
-import { BaseContract } from "@ethersproject/contracts";
-import { Eip1193Bridge } from "@ethersproject/experimental";
+import {BigNumber} from "@ethersproject/bignumber";
+import {BaseContract} from "@ethersproject/contracts";
+import {Eip1193Bridge} from "@ethersproject/experimental";
 
 import MetamocksContext from "./context";
-import { EventHandlerKey, TransactionStatus } from "./enums";
+import {EventHandlerKey, TransactionStatus} from "./enums";
 import {
   fakeBlockByNumberResponse,
   fakeTransactionByHashResponse,
@@ -15,12 +15,11 @@ import {
   SAMPLE_ERROR_MESSAGE,
   userDeniedTransactionError,
 } from "./messages";
-import { AbiHandlerInterface } from "./types";
-import { enumKeys, isTheSameAddress, sleep } from "./utils";
-import { formatChainId } from "./utils/abi";
-import { JsonRpcProvider } from "@ethersproject/providers";
-import { CHAIN_ID, TEST_PRIVATE_KEY } from "./test-utils/data";
-import { Wallet } from "@ethersproject/wallet";
+import {AbiHandlerInterface} from "./types";
+import {enumKeys, isTheSameAddress, sleep} from "./utils";
+import {formatChainId} from "./utils/abi";
+import {JsonRpcProvider} from "@ethersproject/providers";
+import {Wallet} from "@ethersproject/wallet";
 
 export default class MetaMocks extends Eip1193Bridge {
   context: MetamocksContext;
@@ -28,17 +27,21 @@ export default class MetaMocks extends Eip1193Bridge {
   eventListeners = {
     [EventHandlerKey.CHAIN_CHANGED]: function handleChainChanged(
       chainId: string | number
-    ) {},
+    ) {
+    },
     [EventHandlerKey.ACCOUNTS_CHANGED]: function handleAccountsChanged(
       accounts: string[]
-    ) {},
+    ) {
+    },
     [EventHandlerKey.CLOSE]: function handleClose(
       code: number,
       reason: string
-    ) {},
+    ) {
+    },
     [EventHandlerKey.NETWORK_CHANGED]: function handleNetworkChanged(
       networkId: string | number
-    ) {},
+    ) {
+    },
   };
 
   transactionStatus = TransactionStatus.SUCCESS;
@@ -50,8 +53,8 @@ export default class MetaMocks extends Eip1193Bridge {
     rpcUrl = "",
     supportedChainIds?: number[]
   ) {
-    const provider = new JsonRpcProvider(rpcUrl, CHAIN_ID);
-    const signer = new Wallet(TEST_PRIVATE_KEY, provider);
+    const provider = new JsonRpcProvider(rpcUrl, chainId);
+    const signer = new Wallet(signerWalletPrivateKey, provider);
     super(signer, provider);
     this.context = new MetamocksContext(chainId, supportedChainIds);
   }
@@ -79,9 +82,11 @@ export default class MetaMocks extends Eip1193Bridge {
     return this;
   }
 
-  switchEthereumChainSpy(chainId: string) {}
+  switchEthereumChainSpy(chainId: string) {
+  }
 
-  addEthereumChainSpy(chainId: string) {}
+  addEthereumChainSpy(chainId: string) {
+  }
 
   registerAbiHandler<T extends BaseContract>(
     address: string,
@@ -119,7 +124,7 @@ export default class MetaMocks extends Eip1193Bridge {
   }
 
   async send(...args: any[]) {
-    const { isCallbackForm, callback, method, params } = this.getSendArgs(args);
+    const {isCallbackForm, callback, method, params} = this.getSendArgs(args);
     let result = null;
     let resultIsSet = false;
     let runError = null;
@@ -237,7 +242,7 @@ export default class MetaMocks extends Eip1193Bridge {
           getInsufficientFundTransactionError(await this.signer.getAddress())
         );
       } else {
-        setError({ error: { message: SAMPLE_ERROR_MESSAGE } });
+        setError({error: {message: SAMPLE_ERROR_MESSAGE}});
       }
       if (this.transactionWaitTime) {
         await sleep(this.transactionWaitTime);
@@ -252,7 +257,7 @@ export default class MetaMocks extends Eip1193Bridge {
       }
     } else if (resultIsSet) {
       if (isCallbackForm) {
-        callback(null, { result });
+        callback(null, {result});
       } else {
         return result;
       }
@@ -260,7 +265,7 @@ export default class MetaMocks extends Eip1193Bridge {
       try {
         const result = await super.send(method, params);
         if (isCallbackForm) {
-          callback(null, { result });
+          callback(null, {result});
         } else {
           return result;
         }

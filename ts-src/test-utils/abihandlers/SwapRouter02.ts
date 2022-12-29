@@ -177,7 +177,7 @@ export default class SwapRouter02Handler
     },
     overrides: CallOverrides | undefined
   ): Promise<BigNumber> {
-    return Promise.resolve(undefined);
+    return Promise.resolve(BigNumber.from(0));
   }
 
   exactInputSingle(
@@ -193,7 +193,7 @@ export default class SwapRouter02Handler
     overrides: CallOverrides | undefined
   ): Promise<BigNumber> {
     console.log({params});
-    return Promise.resolve(undefined);
+    return Promise.resolve(BigNumber.from(0));
   }
 
   exactOutput(
@@ -205,7 +205,7 @@ export default class SwapRouter02Handler
     },
     overrides: CallOverrides | undefined
   ): Promise<BigNumber> {
-    return Promise.resolve(undefined);
+    return Promise.resolve(BigNumber.from(0));
   }
 
   exactOutputSingle(
@@ -220,7 +220,7 @@ export default class SwapRouter02Handler
     },
     overrides: CallOverrides | undefined
   ): Promise<BigNumber> {
-    return Promise.resolve(undefined);
+    return Promise.resolve(BigNumber.from(0));
   }
 
   factory(overrides: CallOverrides | undefined): Promise<string> {
@@ -339,7 +339,7 @@ export default class SwapRouter02Handler
     to: string,
     overrides: CallOverrides | undefined
   ): Promise<BigNumber> {
-    return Promise.resolve(undefined);
+    return Promise.resolve(BigNumber.from(0));
   }
 
   swapTokensForExactTokens(
@@ -349,7 +349,7 @@ export default class SwapRouter02Handler
     to: string,
     overrides: CallOverrides | undefined
   ): Promise<BigNumber> {
-    return Promise.resolve(undefined);
+    return Promise.resolve(BigNumber.from(0));
   }
 
   uniswapV3SwapCallback(
