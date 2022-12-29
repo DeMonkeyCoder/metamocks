@@ -39,6 +39,7 @@ class MetaMocks extends experimental_1.Eip1193Bridge {
         };
         this.transactionStatus = enums_1.TransactionStatus.SUCCESS;
         this.transactionWaitTime = 0;
+        this.transactionDataByHash = {};
         this.context = new context_1.default(chainId, supportedChainIds);
     }
     setTransactionStatus(status) {
@@ -155,8 +156,10 @@ class MetaMocks extends experimental_1.Eip1193Bridge {
             }
             if (method === "eth_getTransactionByHash") {
                 const [transactionHash] = params;
+                const data = this.transactionDataByHash[transactionHash] || "0xfdb5a03e";
                 setResult(Object.assign(fake_tx_data_1.fakeTransactionByHashResponse, {
                     hash: transactionHash,
+                    data,
                 }));
             }
             if (method === "eth_getTransactionReceipt") {
@@ -195,7 +198,9 @@ class MetaMocks extends experimental_1.Eip1193Bridge {
                     }
                 }
                 if (this.transactionStatus === enums_1.TransactionStatus.SUCCESS) {
-                    setResult(this.context.getFakeTransactionHash());
+                    const transactionHash = this.context.getFakeTransactionHash();
+                    setResult(transactionHash);
+                    this.transactionDataByHash[transactionHash] = params[0].data;
                 }
                 else if (this.transactionStatus === enums_1.TransactionStatus.USER_DENIED) {
                     setError(messages_1.userDeniedTransactionError);

@@ -27,5 +27,8 @@ export default class MetaMocks extends Eip1193Bridge {
         method: any;
         params: any;
     };
+    transactionDataByHash: {
+        [hash: string]: string;
+    };
     send(...args: any[]): Promise<any>;
 }

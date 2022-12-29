@@ -123,6 +123,8 @@ export default class MetaMocks extends Eip1193Bridge {
     };
   }
 
+  transactionDataByHash: { [hash: string]: string } = {};
+
   async send(...args: any[]) {
     const {isCallbackForm, callback, method, params} = this.getSendArgs(args);
     let result = null;
@@ -181,9 +183,11 @@ export default class MetaMocks extends Eip1193Bridge {
     }
     if (method === "eth_getTransactionByHash") {
       const [transactionHash] = params;
+      const data = this.transactionDataByHash[transactionHash] || "0xfdb5a03e";
       setResult(
         Object.assign(fakeTransactionByHashResponse, {
           hash: transactionHash,
+          data,
         })
       );
     }
@@ -232,7 +236,9 @@ export default class MetaMocks extends Eip1193Bridge {
         }
       }
       if (this.transactionStatus === TransactionStatus.SUCCESS) {
-        setResult(this.context.getFakeTransactionHash());
+        const transactionHash = this.context.getFakeTransactionHash();
+        setResult(transactionHash);
+        this.transactionDataByHash[transactionHash] = params[0].data;
       } else if (this.transactionStatus === TransactionStatus.USER_DENIED) {
         setError(userDeniedTransactionError);
       } else if (
