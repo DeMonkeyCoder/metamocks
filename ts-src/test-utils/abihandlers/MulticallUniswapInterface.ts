@@ -1,16 +1,16 @@
-import { BigNumber } from "@ethersproject/bignumber";
-import MulticallJson from "@uniswap/v3-periphery/artifacts/contracts/lens/UniswapInterfaceMulticall.sol/UniswapInterfaceMulticall.json";
-import { AbiHandler, AbiHandlerInterface, isTheSameAddress } from "../../index";
+import {BigNumber} from "@ethersproject/bignumber";
+import MulticallJson
+  from "@uniswap/v3-periphery/artifacts/contracts/lens/UniswapInterfaceMulticall.sol/UniswapInterfaceMulticall.json";
+import {AbiHandler, AbiHandlerInterface, isTheSameAddress} from "../../index";
 
-import { UniswapInterfaceMulticall } from "../abis/types/uniswap";
-import { CallOverrides } from "ethers";
+import {UniswapInterfaceMulticall} from "../abis/types/uniswap";
+import {CallOverrides} from "ethers";
 
-const { abi: MulticallABI } = MulticallJson;
+const {abi: MulticallABI} = MulticallJson;
 
 export default class MulticallUniswapAbiHandler
   extends AbiHandler<UniswapInterfaceMulticall>
-  implements AbiHandlerInterface<UniswapInterfaceMulticall>
-{
+  implements AbiHandlerInterface<UniswapInterfaceMulticall> {
   abi = MulticallABI;
 
   getCurrentBlockTimestamp(
@@ -29,15 +29,13 @@ export default class MulticallUniswapAbiHandler
   async multicall(
     calls: UniswapInterfaceMulticall.CallStruct[],
     overrides: CallOverrides | undefined
-  ): Promise<
-    [BigNumber, UniswapInterfaceMulticall.ResultStructOutput[]] & {
-      blockNumber: BigNumber;
-      returnData: UniswapInterfaceMulticall.ResultStructOutput[];
-    }
-  > {
+  ): Promise<[BigNumber, UniswapInterfaceMulticall.ResultStructOutput[]] & {
+    blockNumber: BigNumber;
+    returnData: UniswapInterfaceMulticall.ResultStructOutput[];
+  }> {
     const results: UniswapInterfaceMulticall.ResultStructOutput[] = [];
     for (const call of calls) {
-      const { target, gasLimit, callData } = call;
+      const {target, gasLimit, callData} = call;
       for (const contractAddress in this.context.handlers) {
         if (isTheSameAddress(contractAddress, target)) {
           await this.context.handlers[contractAddress].handleCall(
@@ -69,23 +67,3 @@ export default class MulticallUniswapAbiHandler
     };
   }
 }
-/*
-
-  async multicall(decodedInput: any[]) {
-    const [calls] = decodedInput;
-    const results: any[] = [];
-    for (const call of calls) {
-      const [callAddress, gasEstimated, callInput] = call;
-      for (const contractAddress in this.context.handlers) {
-        if (isTheSameAddress(contractAddress, callAddress)) {
-          await this.context.handlers[contractAddress].handleCall(
-            callInput,
-            (r: string) => results.push([true, gasEstimated, r])
-          );
-        }
-      }
-    }
-    return [this.context.getLatestBlock().number, results];
-  }
-
- */
