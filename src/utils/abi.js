@@ -22,7 +22,11 @@ function encodeFunctionData(abi, funcName, values) {
 exports.encodeFunctionData = encodeFunctionData;
 function decodeFunctionCall(abi, input) {
     const decoder = new InputDataDecoder(abi);
-    const { method } = decoder.decodeData(input);
+    const decoded = decoder.decodeData(input);
+    let method = decoded.method;
+    if (abi.filter((f) => f.name === method).length > 1) {
+        method = `${method}(${decoded.types.join(",")})`;
+    }
     const iface = new abi_1.Interface(abi);
     return {
         method,

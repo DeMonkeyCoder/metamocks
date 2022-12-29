@@ -1,11 +1,11 @@
 {
   "name": "metamocks",
-  "version": "0.7.6",
+  "version": "0.7.7",
   "description": "a utility to mock metamask mainly for e2e testing",
   "main": "./src/index.js",
   "types": "./types/index.d.ts",
   "scripts": {
-    "contracts:compile:uniswaphelpers": "typechain --target ethers-v5 --out-dir ts-src/test-utils/abis/types/uniswap \"./node_modules/@uniswap/v3-periphery/artifacts/contracts/lens/UniswapInterfaceMulticall.sol/UniswapInterfaceMulticall.json\"",
+    "contracts:compile:uniswaphelpers": "typechain --target ethers-v5 --out-dir ts-src/test-utils/abis/types/uniswap \"./node_modules/@uniswap/**/artifacts/contracts/**/*[!dbg].json\"",
     "contracts:compile:abi": "typechain --target ethers-v5 --out-dir ts-src/test-utils/abis/types \"./ts-src/test-utils/**/*.json\"",
     "contracts:compile": "yarn contracts:compile:abi && yarn contracts:compile:uniswaphelpers",
     "prepare": "yarn contracts:compile",
@@ -54,6 +54,7 @@
     "@typechain/ethers-v5": "^10.0.0",
     "@types/chai": "^4.3.3",
     "@types/mocha": "^9.1.1",
+    "@uniswap/swap-router-contracts": "^1.3.0",
     "@uniswap/v3-periphery": "^1.4.1",
     "chai": "^4.3.6",
     "mocha": "^10.0.0",

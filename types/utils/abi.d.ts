@@ -10,7 +10,7 @@ export declare type DecodedCall<T extends BaseContract> = {
     types: any[];
 };
 export declare function encodeFunctionData<T extends BaseContract>(abi: any, funcName: string, values?: ReadonlyArray<any>): string;
-export declare function decodeFunctionCall(abi: any, input: BytesLike): {
+export declare function decodeFunctionCall(abi: any[], input: BytesLike): {
     method: any;
     inputs: import("@ethersproject/abi").Result;
 };
