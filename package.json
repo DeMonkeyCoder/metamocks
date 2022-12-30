@@ -1,6 +1,6 @@
 {
   "name": "metamocks",
-  "version": "0.7.9",
+  "version": "0.8.0",
   "description": "a utility to mock metamask mainly for e2e testing",
   "main": "./src/index.js",
   "types": "./types/index.d.ts",
@@ -9,7 +9,7 @@
     "contracts:compile:abi": "typechain --target ethers-v5 --out-dir ts-src/test-utils/abis/types \"./ts-src/test-utils/**/*.json\"",
     "contracts:compile": "yarn contracts:compile:abi && yarn contracts:compile:uniswaphelpers",
     "prepare": "yarn contracts:compile",
-    "build": "tsc -p ./tsconfig.json",
+    "build": "rm -rf ./src && rm -rf ./types && tsc -p ./tsconfig.json",
     "format": "npm run prettier -- --write",
     "format:ci": "npm run prettier -- --check",
     "lint": "tslint -p tsconfig.json -c tslint.json",

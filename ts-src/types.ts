@@ -1,8 +1,8 @@
-import { BaseContract } from "@ethersproject/contracts";
-import { MetamocksContext } from "./index";
-import { BytesLike } from "@ethersproject/bytes";
+import {BaseContract} from "@ethersproject/contracts";
+import {MetamocksContext} from "./index";
+import {BytesLike} from "@ethersproject/bytes";
 
-export declare type BaseHandlerInterface = {
+export declare type BaseMockContractInterface = {
   abi: any[];
   context: MetamocksContext;
   handleCall(
@@ -14,6 +14,6 @@ export declare type BaseHandlerInterface = {
     setResult: (arg0: string) => void
   ): Promise<void>;
 };
-export declare type AbiHandlerMethods<T extends BaseContract> = T["callStatic"];
-export declare type AbiHandlerInterface<T extends BaseContract> =
-  AbiHandlerMethods<T> & BaseHandlerInterface;
+export declare type MockContractMethods<T extends BaseContract> = T["callStatic"];
+export declare type MockContractInterface<T extends BaseContract> =
+  MockContractMethods<T> & BaseMockContractInterface;

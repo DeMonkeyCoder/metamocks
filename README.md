@@ -39,9 +39,9 @@ Cypress.Commands.add('setupMetamocks', () => {
     })
 })
 
-Cypress.Commands.add('registerAbiHandler', (...args) => {
+Cypress.Commands.add('registerMockContract', (...args) => {
     cy.get('@metamocks').then((metamocks) => {
-        metamocks.registerAbiHandler(...args)
+        metamocks.registerMockContract(...args)
     })
 })
 ```
@@ -60,7 +60,7 @@ export interface EthereumProvider {
 declare global {
     namespace Cypress {
         interface Chainable {
-            registerAbiHandler: (...args: Parameters<MetaMocks['registerAbiHandler']>) => void;
+            registerMockContract: (...args: Parameters<MetaMocks['registerMockContract']>) => void;
 
             setupMetamocks(): void;
         }
@@ -85,13 +85,13 @@ now you can setup metamocks in your tests using `cy.setupMetamocks()` before vis
 To mock an abi, you should create an `AbiHanlder` class for it, and implement the mock contract methods there. An
 example AbiHanlders can be
 found [here](https://github.com/Song-Dust/interface/tree/master/cypress/utils/abihandlers). then register that
-AbiHandler with
+MockContract with
 
 ```ts
-metamocks.registerAbiHandler(contractAddress, YourContractHandler)
+metamocks.registerMockContract(contractAddress, YourContractHandler)
 ```
 
-if you are using cypress, use `this.metamocks.registerAbiHandler` or `cy.registerAbiHandler`
+if you are using cypress, use `this.metamocks.registerMockContract` or `cy.registerMockContract`
 
 ## example usage
 

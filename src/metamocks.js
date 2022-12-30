@@ -66,7 +66,7 @@ class MetaMocks extends experimental_1.Eip1193Bridge {
     }
     addEthereumChainSpy(chainId) {
     }
-    registerAbiHandler(address, handlerClass) {
+    registerMockContract(address, handlerClass) {
         const handler = new handlerClass(this.context);
         this.context.setHandler(address, handler);
         return handler;

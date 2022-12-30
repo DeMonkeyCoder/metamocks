@@ -15,7 +15,7 @@ import {
   SAMPLE_ERROR_MESSAGE,
   userDeniedTransactionError,
 } from "./messages";
-import {AbiHandlerInterface} from "./types";
+import {MockContractInterface} from "./types";
 import {enumKeys, isTheSameAddress, sleep} from "./utils";
 import {formatChainId} from "./utils/abi";
 import {JsonRpcProvider} from "@ethersproject/providers";
@@ -88,9 +88,9 @@ export default class MetaMocks extends Eip1193Bridge {
   addEthereumChainSpy(chainId: string) {
   }
 
-  registerAbiHandler<T extends BaseContract>(
+  registerMockContract<T extends BaseContract>(
     address: string,
-    handlerClass: new (...args: any) => AbiHandlerInterface<T>
+    handlerClass: new (...args: any) => MockContractInterface<T>
   ) {
     const handler = new handlerClass(this.context);
     this.context.setHandler(address, handler);

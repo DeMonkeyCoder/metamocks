@@ -1,9 +1,9 @@
 import {expect} from "chai";
-import MetaMocks from "../ts-src";
+import MetaMocks, {UniswapInterfaceMulticallMockContract} from "../ts-src";
 import {
-  Erc20AbiHandler,
-  Erc20AbiHandlerAllowAll,
-} from "../ts-src/test-utils/abihandlers/Erc20";
+  Erc20MockContract,
+  Erc20MockContractAllowAll,
+} from "../ts-src/test-utils/mock-contracts/Erc20";
 import {Erc20} from "../ts-src/test-utils/abis/types";
 import {
   CHAIN_ID,
@@ -20,7 +20,6 @@ import {decodeFunctionResult, encodeFunctionData} from "../ts-src/utils/abi";
 import {MaxUint256} from "@ethersproject/constants";
 import ERC20_ABI from "../ts-src/test-utils/abis/erc20.json";
 import {UniswapInterfaceMulticall} from "../ts-src/test-utils/abis/types/uniswap";
-import MulticallUniswapAbiHandler from "../ts-src/test-utils/abihandlers/MulticallUniswapInterface";
 import {BigNumber} from "ethers";
 
 const {abi: MulticallABI} = MulticallJson;
@@ -62,9 +61,9 @@ describe("Metamocks", () => {
   }
 
   it("can read data from test contract", async () => {
-    metamocks.registerAbiHandler<Erc20>(
+    metamocks.registerMockContract<Erc20>(
       TEST_ERC20_CONTRACT_ADDRESS,
-      Erc20AbiHandlerAllowAll
+      Erc20MockContractAllowAll
     );
     const res = await getAllowance();
     expect(res).to.eq(
@@ -73,13 +72,13 @@ describe("Metamocks", () => {
   });
 
   it("can read test contract by multicall", async () => {
-    metamocks.registerAbiHandler<Erc20>(
+    metamocks.registerMockContract<Erc20>(
       TEST_ERC20_CONTRACT_ADDRESS,
-      Erc20AbiHandler
+      Erc20MockContract
     );
-    metamocks.registerAbiHandler<UniswapInterfaceMulticall>(
+    metamocks.registerMockContract<UniswapInterfaceMulticall>(
       TEST_MULTICALL_CONTRACT_ADDRESS,
-      MulticallUniswapAbiHandler
+      UniswapInterfaceMulticallMockContract
     );
     const balanceCall = encodeFunctionData(ERC20_ABI, "balanceOf", [
       TEST_ADDRESS_NEVER_USE,
@@ -111,9 +110,9 @@ describe("Metamocks", () => {
   }
 
   it("can send transaction to the test contract", async () => {
-    metamocks.registerAbiHandler<Erc20>(
+    metamocks.registerMockContract<Erc20>(
       TEST_ERC20_CONTRACT_ADDRESS,
-      Erc20AbiHandler
+      Erc20MockContract
     );
 
     // before transaction
@@ -134,9 +133,9 @@ describe("Metamocks", () => {
   });
 
   it("can send get transaction data by hash after sending the transaction", async () => {
-    metamocks.registerAbiHandler<Erc20>(
+    metamocks.registerMockContract<Erc20>(
       TEST_ERC20_CONTRACT_ADDRESS,
-      Erc20AbiHandler
+      Erc20MockContract
     );
 
     const transactionHash = await sendApproveTransaction();
