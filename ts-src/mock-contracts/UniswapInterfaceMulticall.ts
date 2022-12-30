@@ -3,8 +3,8 @@ import MulticallJson
   from "@uniswap/v3-periphery/artifacts/contracts/lens/UniswapInterfaceMulticall.sol/UniswapInterfaceMulticall.json";
 import {MockContract, MockContractInterface, isTheSameAddress} from "../index";
 
-import {UniswapInterfaceMulticall} from "../test-utils/abis/types/uniswap";
 import {CallOverrides} from "ethers";
+import {UniswapInterfaceMulticall} from "../abis/types/uniswap";
 
 const {abi: MulticallABI} = MulticallJson;
 

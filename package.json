@@ -5,9 +5,10 @@
   "main": "./src/index.js",
   "types": "./types/index.d.ts",
   "scripts": {
-    "contracts:compile:uniswaphelpers": "typechain --target ethers-v5 --out-dir ts-src/test-utils/abis/types/uniswap \"./node_modules/@uniswap/**/artifacts/contracts/**/*[!dbg].json\"",
-    "contracts:compile:abi": "typechain --target ethers-v5 --out-dir ts-src/test-utils/abis/types \"./ts-src/test-utils/**/*.json\"",
-    "contracts:compile": "yarn contracts:compile:abi && yarn contracts:compile:uniswaphelpers",
+    "contracts:compile:uniswapinterfacemulticall": "typechain --target ethers-v5 --out-dir ts-src/abis/types/uniswap \"./node_modules/@uniswap/v3-periphery/artifacts/contracts/lens/UniswapInterfaceMulticall.sol/UniswapInterfaceMulticall.json\"",
+    "contracts:compile:uniswapswaprouter02": "typechain --target ethers-v5 --out-dir ts-src/test-utils/abis/types/uniswap \"./node_modules/@uniswap/swap-router-contracts/artifacts/contracts/SwapRouter02.sol/SwapRouter02.json\"",
+    "contracts:compile:abi": "typechain --target ethers-v5 --out-dir ts-src/test-utils/abis/types \"./ts-src/test-utils/abis/*.json\"",
+    "contracts:compile": "yarn contracts:compile:abi && yarn contracts:compile:uniswapswaprouter02 && yarn contracts:compile:uniswapinterfacemulticall",
     "prepare": "yarn contracts:compile",
     "build": "rm -rf ./src && rm -rf ./types && tsc -p ./tsconfig.json",
     "format": "npm run prettier -- --write",
@@ -19,7 +20,9 @@
   },
   "files": [
     "src",
-    "types"
+    "!src/test-utils",
+    "types",
+    "!types/test-utils"
   ],
   "repository": {
     "type": "git",

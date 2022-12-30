@@ -19,7 +19,7 @@ import MulticallJson
 import {decodeFunctionResult, encodeFunctionData} from "../ts-src/utils/abi";
 import {MaxUint256} from "@ethersproject/constants";
 import ERC20_ABI from "../ts-src/test-utils/abis/erc20.json";
-import {UniswapInterfaceMulticall} from "../ts-src/test-utils/abis/types/uniswap";
+import {UniswapInterfaceMulticall} from "../ts-src/abis/types/uniswap";
 import {BigNumber} from "ethers";
 
 const {abi: MulticallABI} = MulticallJson;
