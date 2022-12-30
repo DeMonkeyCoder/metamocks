@@ -23,6 +23,8 @@
   ],
   "exclude": [
     "ts-src/test-utils",
+    "src/test-utils",
+    "types/test-utils",
     "**/*.spec.ts",
     "**/*.test.ts",
     "node_modules/**/*"
