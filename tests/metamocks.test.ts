@@ -132,14 +132,13 @@ describe("Metamocks", () => {
     );
   });
 
-  it("can send get transaction data by hash after sending the transaction", async () => {
+  it("can get transaction data by hash after sending the transaction", async () => {
     metamocks.registerMockContract<Erc20>(
       TEST_ERC20_CONTRACT_ADDRESS,
       Erc20MockContract
     );
 
     const transactionHash = await sendApproveTransaction();
-    expect(transactionHash).to.have.length(66);
     const tx = await metamocks.send("eth_getTransactionByHash", [
       transactionHash,
     ])
