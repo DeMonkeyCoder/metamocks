@@ -6,13 +6,13 @@
     "esModuleInterop": true,
     "resolveJsonModule": true,
     "lib": [
-      "es6"
+      "es5"
     ],
     "module": "commonjs",
     "outDir": "./src",
     "rootDir": "./ts-src",
     "strict": true,
-    "target": "es6",
+    "target": "es5",
     "types": [
       "@types/mocha",
       "node"

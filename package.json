@@ -1,6 +1,6 @@
 {
   "name": "metamocks",
-  "version": "0.8.0",
+  "version": "0.8.1",
   "description": "a utility to mock metamask mainly for e2e testing",
   "main": "./src/index.js",
   "types": "./types/index.d.ts",
