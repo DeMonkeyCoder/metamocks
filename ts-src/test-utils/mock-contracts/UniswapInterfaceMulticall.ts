@@ -1,7 +1,7 @@
 import {BigNumber} from "@ethersproject/bignumber";
 import MulticallJson
   from "@uniswap/v3-periphery/artifacts/contracts/lens/UniswapInterfaceMulticall.sol/UniswapInterfaceMulticall.json";
-import {MockContract, MockContractInterface, isTheSameAddress} from "../index";
+import {MockContract, MockContractInterface, isTheSameAddress} from "../..";
 
 import {CallOverrides} from "ethers";
 import {UniswapInterfaceMulticall} from "../abis/types/uniswap";
@@ -65,7 +65,6 @@ export default class MulticallUniswapAbiHandler
       ) as UniswapInterfaceMulticall.ResultStructOutput;
       results.push(res);
     }
-
     return Object.assign(
       {
         blockNumber: BigNumber.from(this.context.getLatestBlock().number),

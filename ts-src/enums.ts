@@ -3,6 +3,7 @@ export enum EventHandlerKey {
   ACCOUNTS_CHANGED = 'accountsChanged',
   CLOSE = 'close',
   NETWORK_CHANGED = 'networkChanged',
+  DISCONNECT = 'disconnect',
 }
 
 export enum TransactionStatus {

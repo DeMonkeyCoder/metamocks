@@ -1,10 +1,11 @@
 import {expect} from "chai";
-import MetaMocks, {UniswapInterfaceMulticallMockContract} from "../ts-src";
+import MetaMocks from "../ts-src";
+import UniswapInterfaceMulticallMockContract from '../ts-src/test-utils/mock-contracts/UniswapInterfaceMulticall'
 import {
   Erc20MockContract,
   Erc20MockContractAllowAll,
 } from "../ts-src/test-utils/mock-contracts/Erc20";
-import {Erc20} from "../ts-src/test-utils/abis/types";
+import {Erc20, Multicall3} from "../ts-src/test-utils/abis/types";
 import {
   CHAIN_ID,
   TEST_ADDRESS_NEVER_USE,
@@ -19,8 +20,10 @@ import MulticallJson
 import {decodeFunctionResult, encodeFunctionData} from "../ts-src/utils/abi";
 import {MaxUint256} from "@ethersproject/constants";
 import ERC20_ABI from "../ts-src/test-utils/abis/erc20.json";
-import {UniswapInterfaceMulticall} from "../ts-src/abis/types/uniswap";
+import Multicall3ABI from "../ts-src/test-utils/abis/multicall3.json";
+import {UniswapInterfaceMulticall} from "../ts-src/test-utils/abis/types/uniswap";
 import {BigNumber} from "ethers";
+import Multicall3MockContract from "../ts-src/test-utils/mock-contracts/Multicall3";
 
 const {abi: MulticallABI} = MulticallJson;
 
@@ -71,7 +74,7 @@ describe("Metamocks", () => {
     );
   });
 
-  it("can read test contract by multicall", async () => {
+  it("can read test contract by Uniswap multicall2", async () => {
     metamocks.registerMockContract<Erc20>(
       TEST_ERC20_CONTRACT_ADDRESS,
       Erc20MockContract
@@ -90,6 +93,29 @@ describe("Metamocks", () => {
       1,
     ]);
     const decoded = decodeFunctionResult(MulticallABI, "multicall", res);
+    expect(BigNumber.from(decoded.returnData[0].returnData).eq(TOKEN_BALANCE))
+      .to.be.true;
+  });
+
+  it("can read test contract by Uniswap multicall3", async () => {
+    metamocks.registerMockContract<Erc20>(
+      TEST_ERC20_CONTRACT_ADDRESS,
+      Erc20MockContract
+    );
+    metamocks.registerMockContract<Multicall3>(
+      TEST_MULTICALL_CONTRACT_ADDRESS,
+      Multicall3MockContract
+    );
+    const balanceCall = encodeFunctionData(ERC20_ABI, "balanceOf", [
+      TEST_ADDRESS_NEVER_USE,
+    ]);
+    const calls = [[TEST_ERC20_CONTRACT_ADDRESS, false, balanceCall]];
+    const multicall = encodeFunctionData(Multicall3ABI, "aggregate3", [calls]);
+    const res = await metamocks.send("eth_call", [
+      {to: TEST_MULTICALL_CONTRACT_ADDRESS, data: multicall},
+      1,
+    ]);
+    const decoded = decodeFunctionResult(Multicall3ABI, "aggregate3", res);
     expect(BigNumber.from(decoded.returnData[0].returnData).eq(TOKEN_BALANCE))
       .to.be.true;
   });

@@ -1,12 +1,11 @@
-import {BaseContract} from "@ethersproject/contracts";
+import {BytesLike} from '@ethersproject/bytes';
+import {BaseContract} from '@ethersproject/contracts';
 
-import MetamocksContext from "./context";
-import {MockContractInterface, BaseMockContractInterface} from "./types";
-import {decodeFunctionCall, encodeFunctionResult} from "./utils/abi";
-import {BytesLike} from "@ethersproject/bytes";
+import MetamocksContext from './context';
+import {BaseMockContractInterface, MockContractInterface} from './types';
+import {decodeFunctionCall, encodeFunctionResult} from './utils/abi';
 
-export default class BaseMockContract<T extends BaseContract>
-  implements BaseMockContractInterface {
+export default class BaseMockContract<T extends BaseContract> implements BaseMockContractInterface {
   abi: any[] = [];
   context: MetamocksContext;
 
@@ -19,32 +18,24 @@ export default class BaseMockContract<T extends BaseContract>
 
   async handleCall(data: BytesLike, setResult?: (result: string) => void) {
     const decoded = decodeFunctionCall(this.abi, data);
-    const res: any = await (this as unknown as MockContractInterface<T>)[
-      decoded.method
-      ](...decoded.inputs);
+    const res: any = await (this as unknown as MockContractInterface<T>)[decoded.method](...decoded.inputs);
 
-    const isLikeArray = (obj: any) =>
-      obj[0] !== undefined && typeof obj !== "string";
+    const isArrayOrStructReturnType = (obj: any) => obj[0] !== undefined && typeof obj !== 'string';
 
-    const filterArray = (arr: any[]): any[] => {
-      if (!isLikeArray(arr)) return arr;
+    const filterRes = (arr: any[]): any[] => {
+      if (!isArrayOrStructReturnType(arr)) return arr;
       const a: any[] = [];
       let i = 0;
       while (arr[i] !== undefined) {
-        a.push(filterArray(arr[i]));
+        a.push(filterRes(arr[i]));
         i++;
       }
       return a;
     };
-
+    const resIsStruct = isArrayOrStructReturnType(res) && !Array.isArray(res)
+    const resFinal = isArrayOrStructReturnType(res) ? filterRes(res) : res;
     if (setResult) {
-      setResult(
-        encodeFunctionResult(
-          this.abi,
-          decoded.method as string,
-          isLikeArray(res) ? filterArray(res) : [res]
-        )
-      );
+      setResult(encodeFunctionResult(this.abi, decoded.method as string, resIsStruct ? resFinal : [resFinal]));
     }
   }
 

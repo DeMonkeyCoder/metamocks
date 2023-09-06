@@ -1,58 +1,45 @@
-import {BigNumber} from "@ethersproject/bignumber";
-import {BaseContract} from "@ethersproject/contracts";
-import {Eip1193Bridge} from "@ethersproject/experimental";
+import {BigNumber} from '@ethersproject/bignumber';
+import {BaseContract} from '@ethersproject/contracts';
+import {Eip1193Bridge} from '@ethersproject/experimental';
+import {JsonRpcProvider} from '@ethersproject/providers';
+import {Wallet} from '@ethersproject/wallet';
 
-import MetamocksContext from "./context";
-import {EventHandlerKey, TransactionStatus} from "./enums";
-import {
-  fakeBlockByNumberResponse,
-  fakeTransactionByHashResponse,
-  fakeTransactionReceipt,
-} from "./fake-tx-data";
+import MetamocksContext from './context';
+import {EventHandlerKey, TransactionStatus} from './enums';
+import {fakeBlockByNumberResponse, fakeTransactionByHashResponse, fakeTransactionReceipt} from './fake-tx-data';
 import {
   getInsufficientFundGasEstimateError,
   getInsufficientFundTransactionError,
   SAMPLE_ERROR_MESSAGE,
   userDeniedTransactionError,
-} from "./messages";
-import {MockContractInterface} from "./types";
-import {enumKeys, isTheSameAddress, sleep} from "./utils";
-import {formatChainId} from "./utils/abi";
-import {JsonRpcProvider} from "@ethersproject/providers";
-import {Wallet} from "@ethersproject/wallet";
+} from './messages';
+import {MockContractInterface} from './types';
+import {enumKeys, isTheSameAddress, sleep} from './utils';
+import {formatChainId} from './utils/abi';
 
 export default class MetaMocks extends Eip1193Bridge {
   context: MetamocksContext;
 
-  eventListeners = {
-    [EventHandlerKey.CHAIN_CHANGED]: function handleChainChanged(
-      chainId: string | number
-    ) {
+  eventListeners: {
+    [key in EventHandlerKey]: Function;
+  } = {
+    [EventHandlerKey.CHAIN_CHANGED]: function handleChainChanged(chainId: string | number) {
     },
-    [EventHandlerKey.ACCOUNTS_CHANGED]: function handleAccountsChanged(
-      accounts: string[]
-    ) {
+    [EventHandlerKey.ACCOUNTS_CHANGED]: function handleAccountsChanged(accounts: string[]) {
     },
-    [EventHandlerKey.CLOSE]: function handleClose(
-      code: number,
-      reason: string
-    ) {
+    [EventHandlerKey.CLOSE]: function handleClose(code: number, reason: string) {
     },
-    [EventHandlerKey.NETWORK_CHANGED]: function handleNetworkChanged(
-      networkId: string | number
-    ) {
+    [EventHandlerKey.NETWORK_CHANGED]: function handleNetworkChanged(networkId: string | number) {
+    },
+    [EventHandlerKey.DISCONNECT]: function f(...args: any[]) {
     },
   };
 
   transactionStatus = TransactionStatus.SUCCESS;
   transactionWaitTime = 0;
+  transactionDataByHash: { [hash: string]: string } = {};
 
-  constructor(
-    signerWalletPrivateKey: string,
-    chainId: number,
-    rpcUrl = "",
-    supportedChainIds?: number[]
-  ) {
+  constructor(signerWalletPrivateKey: string, chainId: number, rpcUrl = '', supportedChainIds?: number[]) {
     const provider = new JsonRpcProvider(rpcUrl, chainId);
     const signer = new Wallet(signerWalletPrivateKey, provider);
     super(signer, provider);
@@ -77,7 +64,7 @@ export default class MetaMocks extends Eip1193Bridge {
       }
     }
     if (!found) {
-      throw Error(`Bridge: Unknown Event Key ${String(eventName)}`);
+      console.error(`Bridge: Unknown Event Key ${String(eventName)}`);
     }
     return this;
   }
@@ -90,7 +77,7 @@ export default class MetaMocks extends Eip1193Bridge {
 
   registerMockContract<T extends BaseContract>(
     address: string,
-    handlerClass: new (...args: any) => MockContractInterface<T>
+    handlerClass: new (...args: any) => MockContractInterface<T>,
   ) {
     const handler = new handlerClass(this.context);
     this.context.setHandler(address, handler);
@@ -102,8 +89,7 @@ export default class MetaMocks extends Eip1193Bridge {
   }
 
   getSendArgs(args: any[]) {
-    const isCallbackForm =
-      typeof args[0] === "object" && typeof args[1] === "function";
+    const isCallbackForm = typeof args[0] === 'object' && typeof args[1] === 'function';
     let callback;
     let method;
     let params;
@@ -116,17 +102,47 @@ export default class MetaMocks extends Eip1193Bridge {
       params = args[1];
     }
     return {
-      isCallbackForm,
       callback,
       method,
       params,
     };
   }
 
-  transactionDataByHash: { [hash: string]: string } = {};
-
   async send(...args: any[]) {
-    const {isCallbackForm, callback, method, params} = this.getSendArgs(args);
+    const {callback, method, params} = this.getSendArgs(args);
+    const {result, resultIsSet, runError, errorIsSet} = await this.handleEthMethod({method, params});
+
+    if (errorIsSet) {
+      if (callback) {
+        callback(runError, null);
+      } else {
+        throw runError;
+      }
+    } else if (resultIsSet) {
+      if (callback) {
+        callback(null, {result});
+      } else {
+        return result;
+      }
+    } else {
+      try {
+        const result = await super.send(method, params);
+        if (callback) {
+          callback(null, {result});
+        } else {
+          return result;
+        }
+      } catch (error) {
+        if (callback) {
+          callback(error, null);
+        } else {
+          throw error;
+        }
+      }
+    }
+  }
+
+  async handleEthMethod({method, params}: { method: string; params: any[] }) {
     let result = null;
     let resultIsSet = false;
     let runError = null;
@@ -142,10 +158,10 @@ export default class MetaMocks extends Eip1193Bridge {
       errorIsSet = true;
     }
 
-    if (method === "eth_requestAccounts" || method === "eth_accounts") {
+    if (method === 'eth_requestAccounts' || method === 'eth_accounts') {
       setResult([await this.signer.getAddress()]);
     }
-    if (method === "wallet_switchEthereumChain") {
+    if (method === 'wallet_switchEthereumChain') {
       this.switchEthereumChainSpy(params[0].chainId);
       if (this.context.supportedChainIds.includes(params[0].chainId)) {
         this.context.chainId = params[0].chainId;
@@ -161,78 +177,71 @@ export default class MetaMocks extends Eip1193Bridge {
         setError(error);
       }
     }
-    if (method === "wallet_addEthereumChain") {
+    if (method === 'wallet_addEthereumChain') {
       this.addEthereumChainSpy(params[0].chainId);
       this.context.supportedChainIds.push(params[0].chainId);
       setResult(null);
     }
-    if (method === "eth_chainId") {
+    if (method === 'eth_chainId') {
       setResult(formatChainId(String(this.context.chainId)));
     }
-    if (method === "eth_getBlockByNumber") {
-      if (params[0] === "latest") {
+    if (method === 'eth_getBalance') {
+      setResult('0x0');
+    }
+    if (method === 'eth_getBlockByNumber') {
+      if (params[0] === 'latest') {
         setResult(this.context.getLatestBlock());
       } else {
         const [blockNumber, returnFullHashes] = params;
         setResult(
           Object.assign(fakeBlockByNumberResponse, {
             number: BigNumber.from(blockNumber).toNumber(),
-          })
+          }),
         );
       }
     }
-    if (method === "eth_getTransactionByHash") {
+    if (method === 'eth_getTransactionByHash') {
       const [transactionHash] = params;
-      const data = this.transactionDataByHash[transactionHash] || "0xfdb5a03e";
+      const data = this.transactionDataByHash[transactionHash] || '0xfdb5a03e';
       setResult(
         Object.assign(fakeTransactionByHashResponse, {
           hash: transactionHash,
           data,
-        })
+        }),
       );
     }
-    if (method === "eth_getTransactionReceipt") {
+    if (method === 'eth_getTransactionReceipt') {
       const [transactionHash] = params;
       const latestBlock = this.context.getLatestBlock();
       const resultLocal = Object.assign(fakeTransactionReceipt, {
         transactionHash,
         blockHash: latestBlock.hash,
         blockNumber: latestBlock.number,
-        logs: fakeTransactionReceipt.logs.map((log) =>
-          Object.assign(log, transactionHash)
-        ),
+        logs: fakeTransactionReceipt.logs.map((log) => Object.assign(log, transactionHash)),
       });
       setResult(resultLocal);
     }
-    if (method === "eth_blockNumber") {
+    if (method === 'eth_blockNumber') {
       setResult(this.context.getLatestBlock().number);
     }
-    if (method === "eth_call") {
+    if (method === 'eth_call') {
       for (const contractAddress in this.context.handlers) {
         if (isTheSameAddress(contractAddress, params[0].to)) {
-          await this.context.handlers[contractAddress].handleCall(
-            params[0].data,
-            setResult
-          );
+          await this.context.handlers[contractAddress].handleCall(params[0].data, setResult);
         }
       }
     }
-    if (method === "eth_estimateGas") {
+    if (method === 'eth_estimateGas') {
       if (this.transactionStatus === TransactionStatus.INSUFFICIENT_FUND) {
-        setError(
-          getInsufficientFundGasEstimateError(await this.signer.getAddress())
-        );
+        setError(getInsufficientFundGasEstimateError(await this.signer.getAddress()));
       } else {
-        setResult("0xba7f");
+        setResult('0xba7f');
       }
     }
-    if (method === "eth_sendTransaction") {
+    if (method === 'eth_sendTransaction') {
       for (const contractAddress in this.context.handlers) {
         if (isTheSameAddress(contractAddress, params[0].to)) {
-          await this.context.handlers[contractAddress].handleTransaction(
-            params[0].data,
-            setResult
-          );
+          await this.context.handlers[contractAddress].handleTransaction(params[0].data, setResult);
         }
       }
       if (this.transactionStatus === TransactionStatus.SUCCESS) {
@@ -241,12 +250,8 @@ export default class MetaMocks extends Eip1193Bridge {
         this.transactionDataByHash[transactionHash] = params[0].data;
       } else if (this.transactionStatus === TransactionStatus.USER_DENIED) {
         setError(userDeniedTransactionError);
-      } else if (
-        this.transactionStatus === TransactionStatus.INSUFFICIENT_FUND
-      ) {
-        setError(
-          getInsufficientFundTransactionError(await this.signer.getAddress())
-        );
+      } else if (this.transactionStatus === TransactionStatus.INSUFFICIENT_FUND) {
+        setError(getInsufficientFundTransactionError(await this.signer.getAddress()));
       } else {
         setError({error: {message: SAMPLE_ERROR_MESSAGE}});
       }
@@ -254,34 +259,11 @@ export default class MetaMocks extends Eip1193Bridge {
         await sleep(this.transactionWaitTime);
       }
     }
-
-    if (errorIsSet) {
-      if (isCallbackForm) {
-        callback(runError, null);
-      } else {
-        throw runError;
-      }
-    } else if (resultIsSet) {
-      if (isCallbackForm) {
-        callback(null, {result});
-      } else {
-        return result;
-      }
-    } else {
-      try {
-        const result = await super.send(method, params);
-        if (isCallbackForm) {
-          callback(null, {result});
-        } else {
-          return result;
-        }
-      } catch (error) {
-        if (isCallbackForm) {
-          callback(error, null);
-        } else {
-          throw error;
-        }
-      }
-    }
+    return {
+      result,
+      resultIsSet,
+      runError,
+      errorIsSet,
+    };
   }
 }
