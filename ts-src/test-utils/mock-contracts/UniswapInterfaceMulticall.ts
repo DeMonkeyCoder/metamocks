@@ -11,7 +11,7 @@ const {abi: MulticallABI} = MulticallJson;
 const EMPTY_DATA =
   "0x0000000000000000000000000000000000000000000000000000000000000000";
 
-export default class MulticallUniswapAbiHandler
+export default class MulticallUniswapMockContract
   extends MockContract<UniswapInterfaceMulticall>
   implements MockContractInterface<UniswapInterfaceMulticall> {
   abi = MulticallABI;
@@ -29,6 +29,7 @@ export default class MulticallUniswapAbiHandler
     return Promise.resolve(BigNumber.from(10).pow(22));
   }
 
+  // TODO: handle "success = false"
   async multicall(
     calls: UniswapInterfaceMulticall.CallStruct[],
     overrides: CallOverrides | undefined
@@ -40,6 +41,7 @@ export default class MulticallUniswapAbiHandler
     for (const call of calls) {
       const {target, gasLimit, callData} = call;
       let returnData = EMPTY_DATA;
+      let success = false;
       for (const contractAddress in this.context.handlers) {
         if (isTheSameAddress(contractAddress, target)) {
           try {
@@ -49,12 +51,12 @@ export default class MulticallUniswapAbiHandler
                 returnData = r;
               }
             );
+            success = true;
           } catch (e) {
             console.error(e);
           }
         }
       }
-      const success = returnData !== EMPTY_DATA;
       const res = Object.assign(
         {
           success,
